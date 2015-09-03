@@ -17,5 +17,7 @@ public class Main {
         polygon.displayPoints();
 
         System.out.println(polygon.inside(new Point(10, 10)));
+        System.out.println();
+        System.out.println(polygon.area());
     }
 }

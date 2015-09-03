@@ -7,9 +7,11 @@ public class Polygon {
     private MyLinkedList<Point> pointsList;
     private MyLinkedList<Edge> edgesList;
     private int radius;
+    private int N; // number of points
 
     public Polygon(int radius, int N) {
         this.radius = radius;
+        this.N = N;
         int t = 0;
         double angle;
         pointsList = new MyLinkedList<>();
@@ -93,6 +95,17 @@ public class Polygon {
         double u = detU / det0;
         double v = detV / det0;
         return u > 0 && u < 1 && v > 0 && v < 1;
+    }
+
+    /**
+     * Returns the are of polygon
+     */
+    public double area() {
+        double sum = 0.0;
+        for (int i = 0; i < N - 1; i++) {
+            sum = sum + (pointsList.get(i).getX() * pointsList.get(i + 1).getY()) - (pointsList.get(i).getY() * pointsList.get(i + 1).getX());
+        }
+        return 0.5 * sum;
     }
 
     /**
