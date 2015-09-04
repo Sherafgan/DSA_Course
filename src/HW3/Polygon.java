@@ -47,12 +47,12 @@ public class Polygon {
      */
     public boolean inside(Point a) {
         int counterOfIntersections = 0;
-        Point b = new Point(a.getX() * (2 * radius), a.getY()); //AB's horizontal right direction
+        Point b = new Point(a.getX() * (2.0 * radius), a.getY()); //AB's horizontal right direction
         Point c;
         Point d;
 
         /*
-        //alternative for
+        //alternative For-Each Loop
         for (Iterator<Edge> edgesIterator = edgesList.iterator(); edgesIterator.hasNext(); ) {
             c = edgesIterator.next().getA();
             d = edgesIterator.next().getB();
@@ -70,11 +70,18 @@ public class Polygon {
             }
         }
 
+        displayGUI(a);
+
         if (counterOfIntersections % 2 == 0) {
             return false;
         } else {
             return true;
         }
+    }
+
+    private void displayGUI(Point a) {
+        PolygonGUI polygonGUI = new PolygonGUI(pointsList, a, radius);
+        polygonGUI.displayGUI();
     }
 
     /**
@@ -102,8 +109,16 @@ public class Polygon {
      */
     public double area() {
         double sum = 0.0;
-        for (int i = 0; i < N - 1; i++) {
-            sum = sum + (pointsList.get(i).getX() * pointsList.get(i + 1).getY()) - (pointsList.get(i).getY() * pointsList.get(i + 1).getX());
+        Point a;
+        Point b;
+        for (int i = 0; i < N; i++) {
+            a = pointsList.get(i);
+            if (i + 1 == N) {
+                b = pointsList.get(0);
+            } else {
+                b = pointsList.get(i + 1);
+            }
+            sum = sum + (a.getX() * b.getY()) - (a.getY() * b.getX());
         }
         return 0.5 * sum;
     }
