@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1dbe58fb-9568-40f9-98be-d28620bf304f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DSA_Course/HW3/Polygon.class" afterPath="$PROJECT_DIR$/out/production/DSA_Course/HW3/Polygon.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/HW3/Main.java" afterPath="$PROJECT_DIR$/src/HW3/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/HW3/Polygon.java" afterPath="$PROJECT_DIR$/src/HW3/Polygon.java" />
+      <change type="DELETED" beforePath="C:\DSA_Course\out\production\DSA_Course\PolygonWithGUI\Main.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\DSA_Course\out\production\DSA_Course\PolygonWithGUI\MyPolygon$1.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\DSA_Course\out\production\DSA_Course\PolygonWithGUI\MyPolygon.class" afterPath="" />
+      <change type="DELETED" beforePath="C:\DSA_Course\out\production\DSA_Course\PolygonWithGUI\Point.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="DSA_Course.iws" />
@@ -31,8 +32,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/HW3/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5786062">
-              <caret line="21" column="60" selection-start-line="21" selection-start-column="60" selection-end-line="21" selection-end-column="60" />
+            <state vertical-scroll-proportion="0.44084278">
+              <caret line="16" column="20" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -473,12 +474,12 @@
       <option name="number" value="Default" />
       <updated>1441303765232</updated>
       <workItem from="1441303766718" duration="3641000" />
-      <workItem from="1441341823043" duration="3297000" />
+      <workItem from="1441341823043" duration="3556000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6938000" />
+    <option name="totallyTimeSpent" value="7197000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
@@ -585,8 +586,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/HW3/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5786062">
-          <caret line="21" column="60" selection-start-line="21" selection-start-column="60" selection-end-line="21" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.44084278">
+          <caret line="16" column="20" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
           <folding />
         </state>
       </provider>
