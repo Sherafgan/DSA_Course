@@ -47,40 +47,63 @@ public class Polygon {
      */
     public boolean inside(Point a) {
         int counterOfIntersections = 0;
-        Point b = new Point(a.getX() * (2.0 * radius), a.getY()); //AB's horizontal right direction
-        Point c;
-        Point d;
-
-        /*
-        //alternative For-Each Loop
-        for (Iterator<Edge> edgesIterator = edgesList.iterator(); edgesIterator.hasNext(); ) {
-            c = edgesIterator.next().getA();
-            d = edgesIterator.next().getB();
-            if (intersects(a, b, c, d)) {
-                counterOfIntersections++;
+        int amountOfRays = 10;
+        int amountOfRaysIntersectedPolygon = 0;
+        MyLinkedList<Point> pointsListOfBs = new MyLinkedList<>();
+        Point b;
+        boolean opChanger = true;
+        for (int i = 50; i <= amountOfRays * 50; i += 50) {
+            double x;
+            double y;
+            if (opChanger) {
+                x = a.getX() + (5.0 * radius);
+                y = -(1.0 * 2.5 * i);
+                opChanger = false;
+            } else {
+                x = a.getX() + (5.0 * radius);
+                y = 1.0 * 2.5 * i;
+//                y = a.getY() + (i * 1000);
+                opChanger = true;
             }
-        }
-        */
+            b = new Point(x, y);
+            pointsListOfBs.add(b);
+            Point c;
+            Point d;
 
-        for (Edge edge : edgesList) {
-            c = edge.getA();
-            d = edge.getB();
-            if (intersects(a, b, c, d)) {
+            /*
+            //alternative For-Each Loop
+            for (Iterator<Edge> edgesIterator = edgesList.iterator(); edgesIterator.hasNext(); ) {
+                c = edgesIterator.next().getA();
+                d = edgesIterator.next().getB();
+                if (intersects(a, b, c, d)) {
                 counterOfIntersections++;
+                }
             }
+            */
+
+            for (Edge edge : edgesList) {
+                c = edge.getA();
+                d = edge.getB();
+                if (intersects(a, b, c, d)) {
+                    counterOfIntersections++;
+                }
+            }
+            if (counterOfIntersections % 2 != 0) {
+                amountOfRaysIntersectedPolygon++;
+            }
+            counterOfIntersections = 0;
         }
+        displayGUI(a, pointsListOfBs);
 
-        displayGUI(a);
-
-        if (counterOfIntersections % 2 == 0) {
-            return false;
-        } else {
+        if (amountOfRaysIntersectedPolygon > (amountOfRays / 2)) {
             return true;
+        } else {
+            return false;
         }
     }
 
-    private void displayGUI(Point a) {
-        PolygonGUI polygonGUI = new PolygonGUI(pointsList, a, radius);
+    private void displayGUI(Point a, MyLinkedList<Point> pointsListOfBs) {
+        PolygonGUI polygonGUI = new PolygonGUI(pointsList, a, pointsListOfBs, radius);
         polygonGUI.displayGUI();
     }
 
