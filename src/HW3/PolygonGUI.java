@@ -13,7 +13,6 @@ public class PolygonGUI extends JPanel {
     private MyLinkedList<Point> pointsListOfBs;
 
     private static final int MOVE_SPACE = 200;
-    private static final int SAFE_RANGE = 100;
 
     public PolygonGUI(MyLinkedList<Point> pointsList, Point a, MyLinkedList<Point> pointsListOfBs, int R) {
         this.pointsList = pointsList;
@@ -37,11 +36,6 @@ public class PolygonGUI extends JPanel {
             int y2 = (int) b.getY() + MOVE_SPACE;
             g.drawLine(x1, y1, x2, y2);
         }
-//        int x1 = (int) a.getX() + MOVE_SPACE;
-//        int y1 = (int) a.getY() + MOVE_SPACE;
-//        int x2 = x1 + (R * SAFE_RANGE);
-//        int y2 = y1 + (R * SAFE_RANGE / 2);
-//        g.drawLine(x1, y1, x2, y2);
     }
 
     public void displayGUI() {

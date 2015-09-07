@@ -62,7 +62,6 @@ public class Polygon {
             } else {
                 x = a.getX() + (5.0 * radius);
                 y = 1.0 * 2.5 * i;
-//                y = a.getY() + (i * 1000);
                 opChanger = true;
             }
             b = new Point(x, y);
