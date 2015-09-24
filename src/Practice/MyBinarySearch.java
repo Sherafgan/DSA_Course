@@ -9,7 +9,7 @@ public class MyBinarySearch {
      * Returns -1 if the array does not contain the element, otherwise
      * calls the another recursive method to get the index of target value.
      */
-    public static int binarySearch(int[] array, int value) {
+    public int binarySearch(int[] array, int value) {
         if (value < array[0] || value > array[array.length - 1]) {
             return -1;
         } else {
