@@ -20,10 +20,27 @@ public class MyStringComparator implements Comparator {
         }
 
         for (int i = 0; i < n; i++) {
-            if (s1.charAt(i) < s2.charAt(i)) {
+            int c1;
+            if (s1.charAt(i) > 90) {
+                c1 = s1.charAt(i) - 32;
+            } else {
+                c1 = s1.charAt(i);
+            }
+
+            int c2;
+            if (s2.charAt(i) > 90) {
+                c2 = s2.charAt(i) - 32;
+            } else {
+                c2 = s2.charAt(i);
+            }
+
+            if (c1 > c2) {
                 return 1;
+            } else if (c1 < c2) {
+                return -1;
             }
         }
+
         return 0;
     }
 }

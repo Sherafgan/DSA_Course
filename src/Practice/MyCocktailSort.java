@@ -1,12 +1,12 @@
 package Practice;
 
-
 /**
  * @author Sherafgan Kandov
- *         24.09.2015
+ *         25.09.2015
+ *         !!!NOT DONE YET!!!
  */
-public class MyBubbleSort {
-    public void bubbleSort(int[] array) {
+public class MyCocktailSort {
+    public void cocktailSort(int[] array) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -19,7 +19,7 @@ public class MyBubbleSort {
         }
     }
 
-    public void bubbleSortWithIntegerComparator(int[] array, MyIntegerComparator myNumComparator) {
+    public void cocktailSortWithIntegerComparator(int[] array, MyIntegerComparator myNumComparator) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -32,7 +32,7 @@ public class MyBubbleSort {
         }
     }
 
-    public void bubbleSortWithDateComparator(Date[] array, MyDateComparator myDateComparator) {
+    public void cocktailSortWithDateComparator(Date[] array, MyDateComparator myDateComparator) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -45,7 +45,7 @@ public class MyBubbleSort {
         }
     }
 
-    public void bubbleSortWithStringComparatorAsc(String[] strings, MyStringComparator myStringComparator) {
+    public void cocktailSortWithStringComparatorAsc(String[] strings, MyStringComparator myStringComparator) {
         int n = strings.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -58,7 +58,7 @@ public class MyBubbleSort {
         }
     }
 
-    public void bubbleSortWithStringComparatorDesc(String[] strings, MyStringComparator myStringComparator) {
+    public void cocktailSortWithStringComparatorDesc(String[] strings, MyStringComparator myStringComparator) {
         int n = strings.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
