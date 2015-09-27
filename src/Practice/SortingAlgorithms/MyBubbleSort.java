@@ -1,12 +1,28 @@
-package Practice;
+package Practice.SortingAlgorithms;
+
 
 /**
  * @author Sherafgan Kandov
- *         25.09.2015
- *         !!!NOT DONE YET!!!
+ *         24.09.2015
  */
-public class MyCocktailSort {
-    public void cocktailSort(int[] array) {
+public class MyBubbleSort {
+
+    public void bubbleSort(Comparable[] a) {
+        int n = a.length;
+        Comparable tmp;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (a[j].compareTo(a[j + 1]) == 1) {
+                    tmp = a[j + 1];
+                    a[j + 1] = a[j];
+                    a[j] = tmp;
+                }
+            }
+        }
+    }
+
+    /*
+    public void bubbleSort(int[] array) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -19,11 +35,11 @@ public class MyCocktailSort {
         }
     }
 
-    public void cocktailSortWithIntegerComparator(int[] array, MyIntegerComparator myNumComparator) {
+    public void bubbleSortWithIntegerComparator(int[] array, MyIntegerComparator myIntegerComparator) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                if (myNumComparator.compare(array[j], array[j + 1]) == 1) {
+                if (myIntegerComparator.compare(array[j], array[j + 1]) == 1) {
                     int tmp = array[j + 1];
                     array[j + 1] = array[j];
                     array[j] = tmp;
@@ -32,7 +48,7 @@ public class MyCocktailSort {
         }
     }
 
-    public void cocktailSortWithDateComparator(Date[] array, MyDateComparator myDateComparator) {
+    public void bubbleSortWithDateComparator(Date[] array, MyDateComparator myDateComparator) {
         int n = array.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -45,7 +61,7 @@ public class MyCocktailSort {
         }
     }
 
-    public void cocktailSortWithStringComparatorAsc(String[] strings, MyStringComparator myStringComparator) {
+    public void bubbleSortWithStringComparatorAsc(String[] strings, MyStringComparator myStringComparator) {
         int n = strings.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -58,7 +74,7 @@ public class MyCocktailSort {
         }
     }
 
-    public void cocktailSortWithStringComparatorDesc(String[] strings, MyStringComparator myStringComparator) {
+    public void bubbleSortWithStringComparatorDesc(String[] strings, MyStringComparator myStringComparator) {
         int n = strings.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -70,4 +86,5 @@ public class MyCocktailSort {
             }
         }
     }
+    */
 }

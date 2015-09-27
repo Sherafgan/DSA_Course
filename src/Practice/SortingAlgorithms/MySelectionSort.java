@@ -1,10 +1,35 @@
-package Practice;
+package Practice.SortingAlgorithms;
+
+import Practice.Comparators.MyIntegerComparator;
+import Practice.Comparators.MyStringComparator;
 
 /**
  * @author Sherafgan Kandov
  *         25.09.2015
  */
 public class MySelectionSort {
+
+    public void selectionSort(Comparable[] a) {
+        int n = a.length;
+        Comparable tmp;
+        for (int i = 0; i < n; i++) {
+            Comparable min = a[i];
+            int minIndex = i;
+            for (int j = i; j < n; j++) {
+                if (min.compareTo(a[j]) == 1) {
+                    min = a[j];
+                    minIndex = j;
+                }
+            }
+            if (a[i].compareTo(a[minIndex]) == 1) {
+                tmp = a[minIndex];
+                a[minIndex] = a[i];
+                a[i] = tmp;
+            }
+        }
+    }
+
+    /*
     public void selectionSort(int[] array) {
         int n = array.length;
         for (int i = 0; i < n; i++) {
@@ -80,4 +105,5 @@ public class MySelectionSort {
             }
         }
     }
+    */
 }

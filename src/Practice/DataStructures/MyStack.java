@@ -1,4 +1,4 @@
-package Practice;
+package Practice.DataStructures;
 
 import java.lang.reflect.Constructor;
 
