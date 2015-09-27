@@ -1,6 +1,6 @@
 package Seminar_15_09_15;
 
-import Practice.SortingAlgorithms.MyBinarySearch;
+import Practice.SearchingAlgorithms.MyBinarySearch;
 
 import java.io.FileNotFoundException;
 

@@ -1,4 +1,4 @@
-package Practice.SortingAlgorithms;
+package Practice.SearchingAlgorithms;
 
 import java.util.Stack;
 

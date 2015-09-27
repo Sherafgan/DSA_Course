@@ -1,5 +1,6 @@
 package database; //TODO: remove this line when submitting
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Function;
 
@@ -101,12 +102,18 @@ public class MyFramework {
      */
     @SuppressWarnings({"rawtypes"})
     public static <T> int binarySearch(List<T> data, Function<Object, Comparable> map, Comparable value) {
+        Comparable[] a = convertDataToComparable(data, map);
+
+        return binarySearchR(a, value, 0, data.size() - 1);
+    }
+
+    private static <T> Comparable[] convertDataToComparable(List<T> data, Function<Object, Comparable> map) {
         Comparable[] a = new Comparable[data.size()];
+
         for (int i = 0; i < data.size(); i++) {
-            Comparable tmp = map.apply(data.get(i));
-            a[i] = tmp;
+            a[i] = map.apply(data.get(i));
         }
-        return binarySearch(a, value, 0, data.size() - 1);
+        return a;
     }
 
     /**
@@ -115,12 +122,13 @@ public class MyFramework {
     private static int lastLowIndex;
 
     /**
+     * Recursive method.
      * Calculates middle index of array. Returns 'midIndex' if the middle number in
      * array is equal to target value, otherwise checks if it is greater or less than
      * target value and calls itself changing the 'highIndex' to 'midIndex - 1' or
      * 'lowIndex' to 'midIndex + 1' respectively.
      */
-    private static int binarySearch(Comparable[] a, Comparable value, int lowIndex, int highIndex) {
+    private static int binarySearchR(Comparable[] a, Comparable value, int lowIndex, int highIndex) {
         if (lowIndex > highIndex) {
             return -1;
         }
@@ -130,10 +138,10 @@ public class MyFramework {
             return midIndex;
         } else if (a[midIndex].compareTo(value) == 1) {
             lastLowIndex = lowIndex;
-            return binarySearch(a, value, lowIndex, midIndex - 1);
+            return binarySearchR(a, value, lowIndex, midIndex - 1);
         } else if (value.compareTo(a[midIndex]) == 1) {
             lastLowIndex = midIndex + 1;
-            return binarySearch(a, value, midIndex + 1, highIndex);
+            return binarySearchR(a, value, midIndex + 1, highIndex);
         } else {
             return -1;
         }
@@ -153,13 +161,9 @@ public class MyFramework {
      */
     @SuppressWarnings({"rawtypes"})
     public static <T> int binarySearchOrNext(List<T> data, Function<Object, Comparable> map, Comparable value) {
-        Comparable[] a = new Comparable[data.size()];
-        for (int i = 0; i < data.size(); i++) {
-            Comparable tmp = map.apply(data.get(i));
-            a[i] = tmp;
-        }
+        Comparable[] a = convertDataToComparable(data, map);
 
-        int returnedIndex = binarySearch(a, value, 0, data.size() - 1);
+        int returnedIndex = binarySearchR(a, value, 0, data.size() - 1);
 
         if (returnedIndex == -1) {
             return nextGreaterElementIndex(a, lastLowIndex, value);
@@ -189,7 +193,19 @@ public class MyFramework {
      */
     @SuppressWarnings("rawtypes")
     public static <T> void sort(List<T> data, Function<Object, Comparable> map) {
-        //TODO implement
+        T tmp;
+        Comparable tmp1, tmp2;
+        for (int i = 1; i < data.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                tmp1 = map.apply(data.get(j));
+                tmp2 = map.apply(data.get(i));
+                if (tmp1.compareTo(tmp2) == 1) {
+                    tmp = data.get(j);
+                    data.set(j, data.get(i));
+                    data.set(i, tmp);
+                }
+            }
+        }
     }
 
     /**
