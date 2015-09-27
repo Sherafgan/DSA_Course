@@ -1,6 +1,5 @@
 package database; //TODO: remove this line when submitting
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Function;
 
@@ -193,6 +192,11 @@ public class MyFramework {
      */
     @SuppressWarnings("rawtypes")
     public static <T> void sort(List<T> data, Function<Object, Comparable> map) {
+        /*
+        Comparable[] a = convertDataToComparable(data, map);
+        quickSort(a);
+        */
+
         T tmp;
         Comparable tmp1, tmp2;
         for (int i = 1; i < data.size(); i++) {
@@ -206,6 +210,41 @@ public class MyFramework {
                 }
             }
         }
+    }
+
+    public static void quickSort(Comparable[] a) {
+        quickSort(a, 0, a.length - 1);
+    }
+
+    private static void quickSort(Comparable[] a, int lo, int hi) {
+        if (lo >= hi) return;
+        int pi = partition(a, lo, hi);
+        quickSort(a, lo, pi - 1);
+        quickSort(a, pi + 1, hi);
+    }
+
+    private static int partition(Comparable[] a, int lo, int hi) {
+        int i = lo + 1;
+        int j = hi;
+
+        while (i <= j) {
+            if (a[i].compareTo(a[lo]) <= 0) {
+                i++;
+            } else if (a[j].compareTo(a[lo]) > 0) {
+                j--;
+            } else if (j < i) {
+                break;
+            } else
+                exchange(a, i, j);
+        }
+        exchange(a, lo, j);
+        return j;
+    }
+
+    private static void exchange(Object[] a, int i, int j) {
+        Object tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
     }
 
     /**
