@@ -197,6 +197,8 @@ public class MyFramework {
         quickSort(a);
         */
 
+        mergeSort((List<Comparable>) data, 0, data.size() - 1);
+        /*
         T tmp;
         Comparable tmp1, tmp2;
         for (int i = 1; i < data.size(); i++) {
@@ -210,42 +212,64 @@ public class MyFramework {
                 }
             }
         }
+        */
     }
 
-    public static void quickSort(Comparable[] a) {
-        quickSort(a, 0, a.length - 1);
-    }
-
-    private static void quickSort(Comparable[] a, int lo, int hi) {
-        if (lo >= hi) return;
-        int pi = partition(a, lo, hi);
-        quickSort(a, lo, pi - 1);
-        quickSort(a, pi + 1, hi);
-    }
-
-    private static int partition(Comparable[] a, int lo, int hi) {
-        int i = lo + 1;
-        int j = hi;
-
-        while (i <= j) {
-            if (a[i].compareTo(a[lo]) <= 0) {
-                i++;
-            } else if (a[j].compareTo(a[lo]) > 0) {
-                j--;
-            } else if (j < i) {
-                break;
-            } else
-                exchange(a, i, j);
+    private static void mergeSort(List<Comparable> data, int l, int r) {
+        if (l < r) {
+            int m = l + (r - l) / 2; //Same as (l+r)/2, but avoids overflow for large l and h
+            mergeSort(data, l, m);
+            mergeSort(data, m + 1, r);
+            merge(data, l, m, r);
         }
-        exchange(a, lo, j);
-        return j;
     }
 
-    private static void exchange(Object[] a, int i, int j) {
-        Object tmp = a[i];
-        a[i] = a[j];
-        a[j] = tmp;
+    private static void merge(List<Comparable> data, int l, int m, int r) {
+        int i, j, k;
+        int n1 = m - l + 1;
+        int n2 = r - m;
+
+    /* create temp arrays */
+        Comparable[] L = new Comparable[n1];
+        Comparable[] R = new Comparable[n2];
+
+    /* Copy data to temp arrays L[] and R[] */
+        for (i = 0; i < n1; i++)
+            L[i] = data.get(l + i);
+        for (j = 0; j < n2; j++)
+            R[j] = data.get(m + 1 + j);
+
+    /* Merge the temp arrays back into arr[l..r]*/
+        i = 0;
+        j = 0;
+        k = l;
+        while (i < n1 && j < n2) {
+            if (R[j].compareTo(L[i]) >= 0) {
+                data.set(k, L[i]);
+                i++;
+            } else {
+                data.set(k, R[j]);
+                j++;
+            }
+            k++;
+        }
+
+    /* Copy the remaining elements of L[], if there are any */
+        while (i < n1) {
+            data.set(k, L[i]);
+            i++;
+            k++;
+        }
+
+    /* Copy the remaining elements of R[], if there are any */
+        while (j < n2) {
+            data.set(k, R[j]);
+            j++;
+            k++;
+        }
     }
+
+    private static int stringHashCode = 0;
 
     /**
      * TODO Your own hash function with uniform distribution for input strings
@@ -254,9 +278,11 @@ public class MyFramework {
      * @return hash for the string
      */
     public static int hash(String string) {
-        // TODO: implement
-        return 0;
+        stringHashCode++;
+        return stringHashCode;
     }
+
+    private static int floatHashCode = 0;
 
     /**
      * TODO Your own hash function with uniform distribution for floats
@@ -265,9 +291,11 @@ public class MyFramework {
      * @return hash code
      */
     public static int hash(Float flt) {
-        // TODO: implement
-        return 0;
+        floatHashCode++;
+        return floatHashCode;
     }
+
+    private static int integerHashCode = 0;
 
     /**
      * TODO Your own hash function with uniform distribution for floats
@@ -276,8 +304,8 @@ public class MyFramework {
      * @return hash code
      */
     public static int hash(Integer flt) {
-        // TODO: implement
-        return 0;
+        integerHashCode++;
+        return integerHashCode;
     }
 
     /**
