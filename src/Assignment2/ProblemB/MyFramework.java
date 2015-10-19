@@ -1,6 +1,11 @@
-package database; //TODO: delete this line when submitting
+package Assignment2.ProblemB; //TODO: delete this line when submitting
 
-import java.util.*;
+import database.MyFrameworkTests;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 /**

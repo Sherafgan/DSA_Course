@@ -3,6 +3,8 @@ package Seminar_22_09_15;
 import Practice.DataStructures.Date;
 import Practice.SortingAlgorithms.QuickSort;
 
+import java.util.HashMap;
+
 public class Main {
 
     public static void main(String[] args) {

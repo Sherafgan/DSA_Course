@@ -80,7 +80,7 @@ public class MyBinarySearch {
             return NOT_FOUND;
         }
 
-        int midIndex, lowIndex = 0, highIndex = array[array.length - 1];
+        int midIndex, lowIndex = 0, highIndex = array.length - 1;
 
         Stack<Integer> stack = new Stack<>();
         stack.push(highIndex);
