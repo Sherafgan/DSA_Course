@@ -10,7 +10,7 @@ public class Main {
         MyLinkedBinarySearchTree<String> myLinkedBinarySearchTree = new MyLinkedBinarySearchTree<>();
         int[] array = new int[]{30, 15, 5, 20, 35, 30, 32, 31, 40};
 
-        String[] alphabet = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"};
+        String[] alphabet = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"};
 
         String s = "A";
         for (int i = 0; i < array.length; i++) {
@@ -33,5 +33,9 @@ public class Main {
         System.out.println(myLinkedBinarySearchTree.size());
 
         System.out.println(myLinkedBinarySearchTree.height());
+
+        int[] sortedArray = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+
+        myLinkedBinarySearchTree.add(sortedArray, alphabet);
     }
 }

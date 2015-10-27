@@ -1,14 +1,14 @@
-package Practice.Trees.MyLinkedBinarySearchTree;
+package Practice.Trees.MyAVLTree;
 
 /**
  * @author Sherafgan Kandov
- *         15.10.15
+ *         20.10.2015
  */
-public class MyLinkedBinarySearchTree<E> {
+public class MyAVLTree<E> {
     private Node<E> root;
     private int size;
 
-    public MyLinkedBinarySearchTree() {
+    public MyAVLTree() {
         size = 0;
         root = null;
     }
@@ -57,7 +57,7 @@ public class MyLinkedBinarySearchTree<E> {
 
     //add data of type 'E' associated with 'key'
     //increment 'size' variable
-    public void add(int key, E data) {
+    public void insert(int key, E data) {
         Node<E> newNode = new Node<>(key, data);
 
         if (root == null) {
@@ -84,92 +84,62 @@ public class MyLinkedBinarySearchTree<E> {
             }
 
             size++;
+            balance(root);
         }
     }
 
-    public void add(int[] array, E[] es) {
-        add(array, es, 0, array.length - 1);
+    private void balance(Node<E> root) {
+        Node<E> unbalancedNode = findUnbalancedNode(root);
+
+        Node<E> parentZ = root;
+        Node<E> leftchildY = root;
+        Node<E> rightchildX = root;
+
+        while (rightchildX != unbalancedNode) {
+            if (parentZ.getLeftChild() != null) {
+                parentZ = parentZ.getLeftChild();
+            }
+            if (parentZ.getLeftChild() != null) {
+                leftchildY = parentZ.getLeftChild();
+            }
+            if (leftchildY.getRightChild() != null) {
+                rightchildX = leftchildY.getRightChild();
+            }
+        }
+
+        parentZ.setLeftChild(rightchildX.getRightChild());
+        leftchildY.setRightChild(rightchildX.getLeftChild());
+        rightchildX.setRightChild(parentZ);
+        rightchildX.setLeftChild(leftchildY);
     }
 
-    private void add(int[] array, E[] es, int lowIndex, int highIndex) {
-
-        if (lowIndex == highIndex) {
-            add(array[lowIndex], es[lowIndex]);
+    private Node<E> findUnbalancedNode(Node<E> node) {
+        if (height(node.getLeftChild()) - height(node.getRightChild()) > 1 &&
+                height(node.getLeftChild()) + height(node.getRightChild()) == 3) {
+            return node;
         } else {
-            int midIndex = (lowIndex + highIndex) / 2;
-
-            add(array[midIndex], es[midIndex]);
-
-            //here
-            add(array, es, lowIndex, midIndex - 1);
-
-            add(array, es, lowIndex + 1, highIndex);
+            if (node.getLeftChild() != null && node.getRightChild() != null) {
+                Node<E> result1 = findUnbalancedNode(node.getLeftChild());
+                Node<E> result2 = findUnbalancedNode(node.getRightChild());
+                if (result1 != null) {
+                    return result1;
+                } else {
+                    return result2;
+                }
+            } else if (node.getLeftChild() != null && node.getRightChild() == null) {
+                return findUnbalancedNode(node.getLeftChild());
+            } else if (node.getRightChild() != null && node.getLeftChild() == null) {
+                return findUnbalancedNode(node.getRightChild());
+            } else {
+                return null;
+            }
         }
     }
 
     //removes the data associated with key and returns data, otherwise returns null
     public E delete(int key) {
-        Node<E> parent = root;
-        Node<E> focusNode = root;
-
-        while (key != focusNode.getKey()) {
-            if (key < focusNode.getKey()) {
-                parent = focusNode;
-                focusNode = focusNode.getLeftChild();
-            } else if (key > focusNode.getKey()) {
-                parent = focusNode;
-                focusNode = focusNode.getRightChild();
-            } else {
-                return null;
-            }
-        }
-
-        size--;
-
-        //case1: node is a leaf
-        if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
-            setLink(key, parent, null);
-            return focusNode.getData();
-        }
-        //case2: node has right child only
-        else if (focusNode.getRightChild() != null && focusNode.getLeftChild() == null) {
-            setLink(key, parent, focusNode.getRightChild());
-            return focusNode.getData();
-        }
-        //case3: node has left child only
-        else if (focusNode.getRightChild() == null && focusNode.getLeftChild() != null) {
-            setLink(key, parent, focusNode.getLeftChild());
-            return focusNode.getData();
-        }
-        //case4: node has both left and right children
-        else {
-            //finding inorder successor
-            Node<E> leftChildOfInorderSuccessor = focusNode.getRightChild();
-            Node<E> inorderSuccessor = focusNode.getRightChild();
-            Node<E> parentOfInorderSuccessor = focusNode.getRightChild();
-
-            while (leftChildOfInorderSuccessor != null) {
-                parentOfInorderSuccessor = inorderSuccessor;
-                inorderSuccessor = inorderSuccessor.getLeftChild();
-                leftChildOfInorderSuccessor = inorderSuccessor.getLeftChild();
-            }
-
-            E dataToReturn = focusNode.getData();
-
-            focusNode.setData(inorderSuccessor.getData());
-
-            parentOfInorderSuccessor.setLeftChild(null);
-
-            return dataToReturn;
-        }
-    }
-
-    private void setLink(int key, Node<E> parent, Node<E> nodeOrNull) {
-        if (key < parent.getKey()) {
-            parent.setLeftChild(nodeOrNull);
-        } else {
-            parent.setRightChild(nodeOrNull);
-        }
+        //TODO
+        return null;
     }
 
     public int size() {
