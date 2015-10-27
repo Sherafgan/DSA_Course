@@ -91,7 +91,7 @@ public class ProblemA {
 
     /**
      * Returns -1 if the array does not contain the element, otherwise
-     * calls the another recursive method to get the index of target value.
+     * calls the another recursive method to find the index of target value.
      */
     public static int binarySearch(Comparable[] a, Comparable value) {
         if (a[0].compareTo(value) == 1 || value.compareTo(a[a.length - 1]) == 1) {

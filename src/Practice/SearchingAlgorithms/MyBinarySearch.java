@@ -37,7 +37,7 @@ public class MyBinarySearch {
 
     /**
      * Returns -1 if the array does not contain the element, otherwise
-     * calls the another recursive method to get the index of target value.
+     * calls the another recursive method to find the index of target value.
      */
     public int binarySearchInt(int[] array, int value) {
         if (value < array[0] || value > array[array.length - 1]) {
@@ -73,7 +73,7 @@ public class MyBinarySearch {
     /**
      * Loop + Stack based Binary Search.
      * Returns -1 if the array does not contain the element, otherwise
-     * calls the 'helper' method to get the index of target value.
+     * calls the 'helper' method to find the index of target value.
      */
     public int binarySearchLS(int[] array, int value) {
         if (value < array[0] || value > array[array.length - 1]) {

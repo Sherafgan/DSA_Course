@@ -5,7 +5,7 @@ public class MyCountingSort {
     public int[] countingSort(int[] old) {
         // Loop for every bit in the integers
         for (int shift = Integer.SIZE - 1; shift > -1; shift--) {
-            // The array to put the partially sorted array into
+            // The array to insert the partially sorted array into
             int[] tmp = new int[old.length];
             // The number of 0s
             int j = 0;

@@ -71,7 +71,7 @@ public class SortedIndex extends Index {
 	}
 
 	/**
-	 * Extra method for SortedIndex that allows to get sorted range
+	 * Extra method for SortedIndex that allows to find sorted range
 	 * @param less value that is less then all selected element. Or null if none
 	 * @param more value that is more then all selected element. Or null if none
 	 * @return the list

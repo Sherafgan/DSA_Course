@@ -1,11 +1,10 @@
 package Seminar_20_10_15;
 
-import Practice.Trees.MyAVLTree.MyAVLTree;
-
 /**
  * @author Sherafgan Kandov
  *         20.10.2015
  */
+/*
 public class Main {
     public static void main(String[] args) {
         MyAVLTree<String> myAVLTree = new MyAVLTree<>();
@@ -24,3 +23,4 @@ public class Main {
         System.out.println(myAVLTree.size());
     }
 }
+*/

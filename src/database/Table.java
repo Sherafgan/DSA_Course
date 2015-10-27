@@ -14,7 +14,7 @@ public class Table {
 	private List<String> columns;
 
 	/**
-	 * @return get column names
+	 * @return find column names
 	 */
 	public List<String> getColumns() {
 		return Collections.unmodifiableList(columns);

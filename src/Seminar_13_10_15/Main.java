@@ -1,11 +1,10 @@
 package Seminar_13_10_15;
 
-import Practice.Trees.MyLinkedBinarySearchTree.MyLinkedBinarySearchTree;
-
 /**
  * @author Sherafgan Kandov
  */
 public class Main {
+    /*
     public static void main(String[] args) {
         MyLinkedBinarySearchTree<String> myLinkedBinarySearchTree = new MyLinkedBinarySearchTree<>();
         int[] array = new int[]{30, 15, 5, 20, 35, 30, 32, 31, 40};
@@ -34,4 +33,5 @@ public class Main {
 
         System.out.println(myLinkedBinarySearchTree.height());
     }
+    */
 }
