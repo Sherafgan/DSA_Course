@@ -5,11 +5,11 @@ package Practice.Trees.MyBinarySearchTree;
  */
 public interface ITree {
 
-    public void add(int key);
+    public void insert(int key);
 
-    public int find(int key);
+    public Node find(int key);
 
-    public void delete(int key);
+    public boolean delete(int key);
 
     public int size();
 }

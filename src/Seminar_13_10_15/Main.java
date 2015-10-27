@@ -14,7 +14,7 @@ public class Main {
 
         String s = "A";
         for (int i = 0; i < array.length; i++) {
-            myLinkedBinarySearchTree.add(array[i], s);
+            myLinkedBinarySearchTree.insert(array[i], s);
 
             s = s + alphabet[i + 1];
         }
@@ -27,15 +27,11 @@ public class Main {
 
         System.out.println(myLinkedBinarySearchTree.size());
 
-        myLinkedBinarySearchTree.add(31, "ABCDEFG");
-        myLinkedBinarySearchTree.add(33, "me");
+        myLinkedBinarySearchTree.insert(31, "ABCDEFG");
+        myLinkedBinarySearchTree.insert(33, "me");
 
         System.out.println(myLinkedBinarySearchTree.size());
 
         System.out.println(myLinkedBinarySearchTree.height());
-
-        int[] sortedArray = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-
-        myLinkedBinarySearchTree.add(sortedArray, alphabet);
     }
 }

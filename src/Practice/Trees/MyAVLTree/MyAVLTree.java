@@ -55,7 +55,7 @@ public class MyAVLTree<E> {
         }
     }
 
-    //add data of type 'E' associated with 'key'
+    //insert data of type 'E' associated with 'key'
     //increment 'size' variable
     public void insert(int key, E data) {
         Node<E> newNode = new Node<>(key, data);

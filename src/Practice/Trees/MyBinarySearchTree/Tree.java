@@ -13,7 +13,7 @@ public class Tree implements ITree {
     }
 
     @Override
-    public void add(int key) {
+    public void insert(int key) {
         Node newNode = new Node(key);
 
         if (root == null) {
@@ -51,8 +51,7 @@ public class Tree implements ITree {
     }
 
     @Override
-    public void delete(int key) {
-
+    public boolean delete(int key) {
         //in case we have to delete root
         if (key == root.getKey()) {
             Node subParent = root.getLeftChild();
@@ -65,6 +64,7 @@ public class Tree implements ITree {
             subParent.setRightChild(null);
             root = subParent;
             size--;
+            return true;
         } else {
             Node parent = root;
             Node focusNode = parent;
@@ -84,9 +84,11 @@ public class Tree implements ITree {
                 if (parent.getLeftChild() == focusNode) {
                     parent.setLeftChild(null);
                     size--;
+                    return true;
                 } else {
                     parent.setRightChild(null);
                     size--;
+                    return true;
                 }
             } //in case we have to delete a node, which has one child
             else if ((focusNode.getLeftChild() != null && focusNode.getRightChild() == null) ||
@@ -99,23 +101,28 @@ public class Tree implements ITree {
                         parent.setLeftChild(focusNode.getRightChild());
                     }
                     size--;
+                    return true;
                 } else {
                     parent.setRightChild(focusNode.getLeftChild());
                     size--;
+                    return true;
                 }
             } //in case we have to delete a node, which has two children
             else if (focusNode.getLeftChild() != null && focusNode.getRightChild() != null) {
-                
+                //TODO
+                return false;
+            } else {
+                return false;
             }
         }
     }
 
     @Override
-    public int find(int key) {
+    public Node find(int key) {
 
         //in case root is the key
         if (key == root.getKey()) {
-            return root.getKey();
+            return root;
         }
 
         //otherwise
@@ -127,7 +134,7 @@ public class Tree implements ITree {
                 if (focusNode.getLeftChild() != null) {
                     focusNode = focusNode.getLeftChild();
                     if (focusNode.getKey() == key) {
-                        return focusNode.getKey();
+                        return focusNode;
                     }
                 } else {
                     end = true;
@@ -136,14 +143,14 @@ public class Tree implements ITree {
                 if (focusNode.getRightChild() != null) {
                     focusNode = focusNode.getRightChild();
                     if (focusNode.getKey() == key) {
-                        return focusNode.getKey();
+                        return focusNode;
                     }
                 } else {
                     end = true;
                 }
             }
         }
-        return -1;
+        return null;
     }
 
     public int size() {
