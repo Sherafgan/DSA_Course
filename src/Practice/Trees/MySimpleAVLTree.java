@@ -12,24 +12,6 @@ public class MySimpleAVLTree {
         root = null;
         size = 0;
     }
-/*
-    public void insert(int key) {
-        root = insert(root, key);
-        size++;
-    }
-
-    private Node insert(Node p, int key) {
-        if (p == null) {
-            return new Node(key);
-        }
-        if (key < p.getKey()) {
-            p.setLeftChild(insert(p.getLeftChild(), key));
-        } else {
-            p.setRightChild(insert(p.getRightChild(), key));
-        }
-        return balance(p);
-    }
-    */
 
 
     public void insert(int key) {

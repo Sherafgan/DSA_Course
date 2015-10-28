@@ -10,8 +10,8 @@ public class ProblemC {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
-    private static final String IN_FILE_NAME = "rbt_in_1.txt";
-    private static final String OUT_FILE_NAME = "rbt_out_1.txt";
+    private static final String IN_FILE_NAME = "rbt.in";
+    private static final String OUT_FILE_NAME = "rbt.out";
 
     public static void main(String[] args) throws IOException {
         //read data from input file
@@ -97,108 +97,156 @@ public class ProblemC {
     }
 
     public static class MyRBTree {
+        private static final boolean RED = true;
+        private static final boolean BLACK = false;
+
         private Node root;
-        private int size;
 
         public MyRBTree() {
             root = null;
-            size = 0;
-        }
-
-        public void insert(int key) {
-            root = insert(root, key);
-            root.color = BLACK;
-            // assert check();
-        }
-
-        // insert the key-value pair in the subtree rooted at h
-        private Node insert(Node node, int key) {
-            if (node == null) return new Node(key, RED, 1);
-
-            if (key < node.getKey()) {
-                node.setLeftChild(insert(node.getLeftChild(), key));
-            } else if (key > node.getKey()) {
-                node.setRightChild(insert(node.getRightChild(), key));
-            } else {
-                node.key = key;
-            }
-
-            // fix-up any right-leaning links
-            if (isRed(node.getRightChild()) && !isRed(node.getLeftChild())) node = rotateLeft(node);
-            if (isRed(node.getLeftChild()) && isRed(node.getLeftChild().getLeftChild())) node = rotateRight(node);
-            if (isRed(node.getLeftChild()) && isRed(node.getRightChild())) flipColors(node);
-            node.setN(size(node.getLeftChild()) + size(node.getRightChild()) + 1);
-            return node;
-        }
-
-        private int size(Node x) {
-            if (x == null) return 0;
-            return x.getN();
-        }
-
-        private void flipColors(Node node) {
-            // node must have opposite color of its two children
-            // assert (node != null) && (node.left != null) && (node.right != null);
-            // assert (!isRed(node) &&  isRed(node.left) &&  isRed(node.right))
-            //    || (isRed(node)  && !isRed(node.left) && !isRed(node.right));
-            node.color = !node.color;
-            node.getLeftChild().setColor(!node.getLeftChild().getColor());
-            node.getRightChild().setColor(!node.getRightChild().getColor());
-        }
-
-        // make a left-leaning link lean to the right
-        private Node rotateRight(Node h) {
-            // assert (h != null) && isRed(h.left);
-            Node x = h.getLeftChild();
-            h.setLeftChild(x.getRightChild());
-            x.setRightChild(h);
-            x.setColor(x.getRightChild().getColor());
-            x.getRightChild().setColor(RED);
-            x.setN(h.getN());
-            h.setN(size(h.getLeftChild()) + size(h.getRightChild()) + 1);
-            return x;
-        }
-
-        // make a right-leaning link lean to the left
-        private Node rotateLeft(Node h) {
-            // assert (h != null) && isRed(h.right);
-            Node x = h.getRightChild();
-            h.setRightChild(x.getLeftChild());
-            x.setLeftChild(h);
-            x.setColor(x.getLeftChild().getColor());
-            x.getLeftChild().setColor(RED);
-            x.setN(h.getN());
-            h.setN(size(h.getLeftChild()) + size(h.getRightChild()) + 1);
-            return x;
-        }
-
-        public boolean delete(int key) {
-            //TODO implement: low priority
-            return false;
         }
 
         public Node find(int key) {
             return find(root, key);
         }
 
-        //returns node founded with the same key, null otherwise
         private Node find(Node node, int key) {
-            while (node != null) {
-                if (key < node.getKey()) {
-                    node = node.getLeftChild();
-                } else if (key > node.getKey()) {
-                    node = node.getRightChild();
-                } else {
-                    return node;
-                }
+            if (key == node.getKey()) {
+                return node;
+            } else if (key < node.getKey()) {
+                return find(node.getLeftChild(), key);
+            } else {
+                return find(node.getRightChild(), key);
             }
-            return null;
         }
 
-        //checks whether the node is red or not
+        public void insert(int key) {
+            if (root == null) {
+                root = new Node(key, BLACK); //root is black
+            } else {
+                Node parent = root;
+                Node focusNode = root;
+
+                Node newNode = new Node(key, RED); //new node is always red
+
+                while (focusNode != null) {
+                    if (key < focusNode.getKey()) {
+                        parent = focusNode;
+                        focusNode = focusNode.getLeftChild();
+                    } else {
+                        parent = focusNode;
+                        focusNode = focusNode.getRightChild();
+                    }
+                }
+
+                if (key < parent.getKey()) {
+                    parent.setLeftChild(newNode);
+                } else {
+                    parent.setRightChild(newNode);
+                }
+
+                if (!isBalancedAfterInsertion(parent)) {
+                    Node[] uncleAndGrandF = getUncle(parent);
+                    balanceAfterInsertion(newNode, parent, uncleAndGrandF);
+                }
+            }
+        }
+
+        private void balanceAfterInsertion(Node newNode, Node parent, Node[] uncleAndGrandF) {
+            Node uncle = uncleAndGrandF[0];
+            Node grandF = uncleAndGrandF[1];
+
+            if (isRed(uncle)) {
+                //recoloring
+                parent.setColor(BLACK);
+                uncle.setColor(BLACK); //setting uncle's color black
+                grandF.setColor(RED); // setting grandF's color red
+
+                if (isRed(root)) {
+                    root.setColor(BLACK);
+                }
+            } else {
+                //rotations
+                if (grandF.getLeftChild() == parent) {
+                    if (newNode == parent.getLeftChild()) {
+                        rightRotation(grandF);
+                    } else if (newNode == parent.getRightChild()) {
+                        leftRotation(parent);
+                        rightRotation(grandF);
+                    } else {
+                        System.out.println("SOMETHING UNEXPECTED HAPPENED!");
+                    }
+                } else {
+                    if (parent.getRightChild() == newNode) {
+                        leftRotation(grandF);
+                    } else {
+                        rightRotation(parent);
+                        leftRotation(grandF);
+                    }
+                }
+            }
+        }
+
+        private void leftRotation(Node parent) {
+            Node a = parent;
+            Node x = parent.getRightChild();
+
+            Node newANode = new Node(a.getKey(), a.getColor());
+            newANode.setLeftChild(a.getLeftChild());
+            newANode.setRightChild(x.getLeftChild());
+
+            a.setKey(x.getKey());
+            a.setRightChild(x.getRightChild());
+            a.setLeftChild(newANode);
+        }
+
+        private void rightRotation(Node grandF) {
+            Node b = grandF;
+            Node a = grandF.getRightChild();
+
+            b.setColor(a.getColor());
+            a.setColor(!b.getColor());
+
+            b.setLeftChild(a.getRightChild());
+            a.setRightChild(b);
+        }
+
+        private Node[] getUncle(Node parent) {
+            Node[] uncleAndGranF = new Node[2];
+
+            Node grandF = root;
+            Node focusNode = root;
+            while (parent.getKey() != focusNode.getKey()) {
+                if (parent.getKey() < focusNode.getKey()) {
+                    grandF = focusNode;
+                    focusNode = focusNode.getLeftChild();
+                } else {
+                    grandF = focusNode;
+                    focusNode = focusNode.getRightChild();
+                }
+            }
+            if (grandF.getRightChild() == focusNode) {
+                uncleAndGranF[0] = grandF.getLeftChild();
+                uncleAndGranF[1] = grandF;
+                return uncleAndGranF;
+            } else {
+                uncleAndGranF[0] = grandF.getRightChild();
+                uncleAndGranF[1] = grandF;
+                return uncleAndGranF;
+            }
+        }
+
+        private boolean isBalancedAfterInsertion(Node node) {
+            if (!isRed(node)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         private boolean isRed(Node node) {
             if (node == null) {
-                return false;
+                return BLACK;
             } else {
                 return node.getColor();
             }
@@ -207,15 +255,13 @@ public class ProblemC {
         private class Node {
             private int key;
             private boolean color;
-            private int n;
 
-            private Node rightChild;
             private Node leftChild;
+            private Node rightChild;
 
-            public Node(int key, boolean color, int n) {
+            public Node(int key, boolean color) {
                 this.key = key;
                 this.color = color;
-                this.n = n;
             }
 
             public int getKey() {
@@ -226,12 +272,12 @@ public class ProblemC {
                 this.key = key;
             }
 
-            public Node getRightChild() {
-                return rightChild;
+            public boolean getColor() {
+                return color;
             }
 
-            public void setRightChild(Node rightChild) {
-                this.rightChild = rightChild;
+            public void setColor(boolean color) {
+                this.color = color;
             }
 
             public Node getLeftChild() {
@@ -242,20 +288,12 @@ public class ProblemC {
                 this.leftChild = leftChild;
             }
 
-            public void setColor(boolean color) {
-                this.color = color;
+            public Node getRightChild() {
+                return rightChild;
             }
 
-            public boolean getColor() {
-                return color;
-            }
-
-            public int getN() {
-                return n;
-            }
-
-            public void setN(int n) {
-                this.n = n;
+            public void setRightChild(Node rightChild) {
+                this.rightChild = rightChild;
             }
         }
     }
