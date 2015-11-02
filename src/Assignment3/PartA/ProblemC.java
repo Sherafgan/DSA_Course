@@ -1,4 +1,4 @@
-package Assignment3.PartA.ProblemC;
+package Assignment3.PartA;
 
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package Assignment3.PartA.ProblemB;
+package Assignment3.PartA;
 
 import java.io.*;
 
@@ -6,9 +6,9 @@ import java.io.*;
  * @author Sherafgan Kandov
  *         27.10.2015
  */
-public class ProblemB {
-    private static final String IN_FILE_NAME = "avl.in";
-    private static final String OUT_FILE_NAME = "avl.out";
+public class ProblemA {
+    private static final String IN_FILE_NAME = "bst.in";
+    private static final String OUT_FILE_NAME = "bst.out";
 
     public static void main(String[] args) throws IOException {
         //read data from input file
@@ -18,33 +18,33 @@ public class ProblemB {
         String[] secondLineStrings = inputDataOfThreeLines[1].trim().split("\\s");
         String[] thirdLineStrings = inputDataOfThreeLines[2].trim().split("\\s");
 
-        MyAVLTree myAVLTree = new MyAVLTree();
+        MyLinkedBinarySearchTree myLinkedBinarySearchTree = new MyLinkedBinarySearchTree();
 
-        if (firstLineStrings[0].length() != 0) {
+        if (firstLineStrings.length > 1) {
             int[] firstLineNumbers = parseStringsIntoIntegers(firstLineStrings);
 
             //1st step: reading values of first line to tree one-by-one
             for (int i : firstLineNumbers) {
-                myAVLTree.insert(i);
+                myLinkedBinarySearchTree.insert(i);
             }
         }
 
-        if (secondLineStrings[0].length() != 0) {
+        if (secondLineStrings.length > 1) {
             int[] secondLineNumbers = parseStringsIntoIntegers(secondLineStrings);
 
             //2nd step: deleting values of second from tree one-by-one
             for (int i : secondLineNumbers) {
-                myAVLTree.delete(i);
+                myLinkedBinarySearchTree.delete(i);
             }
         }
 
         String lineToPrint = "";
-        if (thirdLineStrings[0].length() != 0) {
+        if (thirdLineStrings.length > 1) {
             int[] thirdLineNumbers = parseStringsIntoIntegers(thirdLineStrings);
 
             //3rd step: find nodes with keys of third line and print its right child
             for (int i : thirdLineNumbers) {
-                MyAVLTree.Node nodeToFind = myAVLTree.find(i);
+                MyLinkedBinarySearchTree.Node nodeToFind = myLinkedBinarySearchTree.find(i);
                 if (nodeToFind != null) {
                     if (nodeToFind.getRightChild() == null) {
                         lineToPrint = lineToPrint + " null";
@@ -62,7 +62,6 @@ public class ProblemB {
         //write data to output file
         writeData(lineToPrint);
     }
-
 
     private static void writeData(String lineToPrint) throws IOException {
         PrintWriter outFile = new PrintWriter(new FileWriter(OUT_FILE_NAME));
@@ -110,41 +109,78 @@ public class ProblemB {
         return lineNumbers;
     }
 
-    public static class MyAVLTree {
+    static class MyLinkedBinarySearchTree {
         private Node root;
-        private int size;
 
-        public MyAVLTree() {
+        public MyLinkedBinarySearchTree() {
             root = null;
-            size = 0;
         }
 
-        public void insert(int key) {
-            root = insert(root, key);
-            size++;
-        }
+        //returns data of type 'E' if exist, otherwise returns null
+        public Node find(int key) {
+            Node focusNode = root;
 
-        private Node insert(Node p, int key) {
-            if (p == null) {
-                return new Node(key);
-            }
-            if (key < p.getKey()) {
-                p.setLeftChild(insert(p.getLeftChild(), key));
+            if (root.getKey() == key) {
+                return root;
             } else {
-                p.setRightChild(insert(p.getRightChild(), key));
+                while (focusNode.getKey() != key) {
+                    if (key < focusNode.getKey()) {
+                        if (focusNode.getLeftChild() != null) {
+                            focusNode = focusNode.getLeftChild();
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        if (focusNode.getRightChild() != null) {
+                            focusNode = focusNode.getRightChild();
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+                return focusNode;
             }
-            return balance(p);
         }
 
+        //insert data of type 'E' associated with 'key'
+        //increment 'size' variable
+        public void insert(int key) {
+            Node newNode = new Node(key);
+
+            if (root == null) {
+                root = newNode;
+            } else {
+                Node parent = root;
+                Node focusNode = root;
+
+                while (focusNode != null) {
+                    if (key < focusNode.getKey()) {
+                        parent = focusNode;
+                        focusNode = focusNode.getLeftChild();
+                    } else {
+                        parent = focusNode;
+                        focusNode = focusNode.getRightChild();
+                    }
+                }
+
+                if (key < parent.getKey()) {
+                    parent.setLeftChild(newNode);
+                } else {
+                    parent.setRightChild(newNode);
+                }
+            }
+        }
+
+        //removes the data associated with key and returns data, otherwise returns null
         public boolean delete(int key) {
             Node parent = root;
             Node focusNode = root;
 
             while (key != focusNode.getKey()) {
-                if (key < focusNode.getKey()) {
+                if (key < focusNode.getKey() && focusNode.getLeftChild() != null) {
                     parent = focusNode;
                     focusNode = focusNode.getLeftChild();
-                } else if (key > focusNode.getKey()) {
+                } else if (key > focusNode.getKey() && focusNode.getRightChild() != null) {
                     parent = focusNode;
                     focusNode = focusNode.getRightChild();
                 } else {
@@ -152,31 +188,43 @@ public class ProblemB {
                 }
             }
 
-            size--;
-
             //case1: node is a leaf
             if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
                 setLink(key, parent, null);
-                root = balance(root);
                 return true;
             }
             //case2: node has right child only
             else if (focusNode.getRightChild() != null && focusNode.getLeftChild() == null) {
                 setLink(key, parent, focusNode.getRightChild());
-                root = balance(root);
                 return true;
             }
             //case3: node has left child only
             else if (focusNode.getRightChild() == null && focusNode.getLeftChild() != null) {
                 setLink(key, parent, focusNode.getLeftChild());
-                root = balance(root);
                 return true;
             }
             //case4: node has both left and right children
             else {
-                int inorderPredecessorKey = getInorderPredecessorKey(root, root.getLeftChild());
-                focusNode.setKey(inorderPredecessorKey);
-                root = balance(root);
+                //finding inorder predecessor
+                Node rightChildOfInorderPredecessor = focusNode.getLeftChild();
+                Node inorderPredecessor = focusNode.getLeftChild();
+                Node parentOfInorderPredecessor = focusNode.getLeftChild();
+
+                while (rightChildOfInorderPredecessor != null) {
+                    parentOfInorderPredecessor = inorderPredecessor;
+                    inorderPredecessor = inorderPredecessor.getRightChild();
+                    rightChildOfInorderPredecessor = inorderPredecessor.getRightChild();
+                }
+
+                //getting data from inorder predecessor
+                int dataToSet = inorderPredecessor.getKey();
+
+                //setting data to focusNode
+                focusNode.setKey(inorderPredecessor.getKey());
+
+                //setting the inorder predecessor to null (i.e. deleting inorder predecessorx)
+                parentOfInorderPredecessor.setRightChild(null);
+
                 return true;
             }
         }
@@ -189,105 +237,14 @@ public class ProblemB {
             }
         }
 
-        private int getInorderPredecessorKey(Node parent, Node node) {
-            if (node.getRightChild() == null) {
-                int keyToReturn = node.getKey();
-                if (node.getLeftChild() == null) {
-                    parent.setRightChild(null);
-                } else {
-                    parent.setRightChild(node.getLeftChild());
-                }
-                return keyToReturn;
-            } else {
-                return getInorderPredecessorKey(node, node.getRightChild());
-            }
-        }
-
-        public Node find(int key) {
-            return find(root, key);
-        }
-
-        public Node find(Node node, int key) {
-            if (node == null || key == node.getKey()) {
-                return node;
-            } else if (key < node.getKey()) {
-                return find(node.getLeftChild(), key);
-            } else {
-                return find(node.getRightChild(), key);
-            }
-        }
-
-        //balancing tree
-        private Node balance(Node p) {
-            fixHeight(p);
-            if (balanceFactor(p) == 2) {
-                if (balanceFactor(p.getRightChild()) < 0) {
-                    p.setRightChild(rightRotation(p.getRightChild()));
-                }
-                return leftRotation(p);
-            }
-            if (balanceFactor(p) == -2) {
-                if (balanceFactor(p.getLeftChild()) > 0) {
-                    p.setLeftChild(leftRotation(p.getLeftChild()));
-                }
-                return rightRotation(p);
-            }
-
-            return p;
-        }
-
-        //small right rotation around p
-        private Node rightRotation(Node p) {
-            Node q = p.getLeftChild();
-
-            p.setLeftChild(q.getRightChild());
-            q.setRightChild(p);
-
-            fixHeight(p);
-            fixHeight(q);
-            return q;
-        }
-
-        //small left rotation around q
-        private Node leftRotation(Node q) {
-            Node p = q.getRightChild();
-
-            q.setRightChild(p.getLeftChild());
-            p.setLeftChild(q);
-
-            fixHeight(q);
-            fixHeight(p);
-            return p;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int height(Node node) {
-            return node != null ? node.getHeight() : 0;
-        }
-
-        private int balanceFactor(Node node) {
-            return height(node.getRightChild()) - height(node.getLeftChild());
-        }
-
-        public void fixHeight(Node node) {
-            int leftHeight = height(node.getLeftChild());
-            int rightHeight = height(node.getRightChild());
-            node.setHeight((leftHeight > rightHeight ? leftHeight : rightHeight) + 1);
-        }
-
-        private class Node {
+        public class Node {
             private int key;
-            private int height;
 
-            private Node rightChild;
             private Node leftChild;
+            private Node rightChild;
 
             public Node(int key) {
                 this.key = key;
-                height = 1;
             }
 
             public int getKey() {
@@ -298,12 +255,12 @@ public class ProblemB {
                 this.key = key;
             }
 
-            public int getHeight() {
-                return height;
+            public Node getLeftChild() {
+                return leftChild;
             }
 
-            public void setHeight(int height) {
-                this.height = height;
+            public void setLeftChild(Node leftChild) {
+                this.leftChild = leftChild;
             }
 
             public Node getRightChild() {
@@ -312,14 +269,6 @@ public class ProblemB {
 
             public void setRightChild(Node rightChild) {
                 this.rightChild = rightChild;
-            }
-
-            public Node getLeftChild() {
-                return leftChild;
-            }
-
-            public void setLeftChild(Node leftChild) {
-                this.leftChild = leftChild;
             }
         }
     }
