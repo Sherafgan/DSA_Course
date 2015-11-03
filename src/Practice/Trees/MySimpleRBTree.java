@@ -4,13 +4,13 @@ package Practice.Trees;
  * @author Sherafgan Kandov
  *         28.10.2015
  */
-public class MyRBTree {
+public class MySimpleRBTree {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
     private Node root;
 
-    public MyRBTree() {
+    public MySimpleRBTree() {
         root = null;
     }
 
