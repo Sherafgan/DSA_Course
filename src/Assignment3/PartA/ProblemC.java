@@ -7,8 +7,8 @@ import java.io.*;
  *         27.10.2015
  */
 public class ProblemC {
-    private static final String IN_FILE_NAME = "rbt_in_2.txt";
-    private static final String OUT_FILE_NAME = "rbt_out_2.txt";
+    private static final String IN_FILE_NAME = "rbt.in";
+    private static final String OUT_FILE_NAME = "rbt.out";
 
     public static void main(String[] args) throws IOException {
         //read data from input file
@@ -127,10 +127,10 @@ public class ProblemC {
                 Node newNode = new Node(key, RED);
 
                 while (child != null) {
-                    if (key < focusNode.getKey()) {
+                    if (key < child.getKey()) {
                         focusNode = child;
                         child = child.getLeftChild();
-                    } else if (key > focusNode.getKey()) {
+                    } else if (key > child.getKey()) {
                         focusNode = child;
                         child = child.getRightChild();
                     }
@@ -145,6 +145,30 @@ public class ProblemC {
                 if (!isBalanced(focusNode)) {
                     balance(newNode);
                 }
+            }
+        }
+
+        public int maxValue() {
+            return max(root).getKey();
+        }
+
+        private Node max(Node node) {
+            if (node.getRightChild() == null) {
+                return node;
+            } else {
+                return max(node.getRightChild());
+            }
+        }
+
+        public int minValue() {
+            return min(root).getKey();
+        }
+
+        private Node min(Node node) {
+            if (node.getLeftChild() == null) {
+                return node;
+            } else {
+                return max(node.getLeftChild());
             }
         }
 
@@ -174,32 +198,51 @@ public class ProblemC {
         private void restructure(Node x, Node y, Node z) {
             //case 1:
             if (z.getLeftChild() == y && y.getLeftChild() == x) {
-                flipColors(y, z);
-
-                z.setLeftChild(y.getRightChild());
-                y.setRightChild(z);
+                //changing data
+                int tmp = z.getKey();
+                z.setKey(y.getKey());
+                y.setKey(tmp);
+                //changing links
+                y.setLeftChild(y.getRightChild());
+                y.setRightChild(z.getRightChild());
+                z.setRightChild(y);
+                z.setLeftChild(x);
             }
             //case 2:
             else if (z.getLeftChild() == y && y.getRightChild() == x) {
-                z.setLeftChild(x.getRightChild());
+                //changing data
+                int tmp = z.getKey();
+                z.setKey(x.getKey());
+                x.setKey(tmp);
+                //changing links
                 y.setRightChild(x.getLeftChild());
-                x.setRightChild(z);
-                x.setLeftChild(y);
-                flipColors(x, z);
+                x.setLeftChild(x.getRightChild());
+                x.setRightChild(z.getRightChild());
+                z.setRightChild(x);
             }
             //case 3:
             else if (z.getRightChild() == y && y.getRightChild() == x) {
-                z.setRightChild(y.getLeftChild());
-                y.setLeftChild(z);
-                flipColors(y, z);
+                //changing data
+                int tmp = z.getKey();
+                z.setKey(y.getKey());
+                y.setKey(tmp);
+                //changing links
+                y.setRightChild(y.getLeftChild());
+                y.setLeftChild(z.getLeftChild());
+                z.setLeftChild(y);
+                z.setRightChild(x);
             }
             //case 4:
             else if (z.getRightChild() == y && y.getLeftChild() == x) {
+                //changing data
+                int tmp = z.getKey();
+                z.setKey(x.getKey());
+                x.setKey(tmp);
+                //changing links
                 y.setLeftChild(x.getRightChild());
-                z.setRightChild(x.getLeftChild());
-                x.setLeftChild(z);
-                x.setRightChild(y);
-                flipColors(x, z);
+                x.setRightChild(x.getLeftChild());
+                x.setLeftChild(z.getLeftChild());
+                z.setLeftChild(x);
             }
         }
 
@@ -209,7 +252,9 @@ public class ProblemC {
                 s.setColor(BLACK);
                 z.setColor(RED);
 
-                if (!isBalanced(z)) {
+                Node parentOfZ = getParentUncleAndGrandF(z)[0];
+
+                if (!isBalanced(parentOfZ)) {
                     balance(z);
                 }
             } else {
@@ -235,23 +280,25 @@ public class ProblemC {
                     focusNode = focusNode.getRightChild();
                 }
             }
-            if (grandF.getRightChild() == parent) {
-                parentUncleAndGrandF[0] = parent;
-                parentUncleAndGrandF[1] = grandF.getLeftChild();
-                parentUncleAndGrandF[2] = grandF;
-                return parentUncleAndGrandF;
-            } else {
-                parentUncleAndGrandF[0] = parent;
-                parentUncleAndGrandF[1] = grandF.getRightChild();
-                parentUncleAndGrandF[2] = grandF;
-                return parentUncleAndGrandF;
-            }
-        }
 
-        private void flipColors(Node redNode, Node blackNode) {
-            boolean tmp = redNode.getColor();
-            redNode.setColor(blackNode.getColor());
-            blackNode.setColor(tmp);
+            if (grandF != parent) {
+                if (grandF.getRightChild() == parent) {
+                    parentUncleAndGrandF[0] = parent;
+                    parentUncleAndGrandF[1] = grandF.getLeftChild();
+                    parentUncleAndGrandF[2] = grandF;
+                    return parentUncleAndGrandF;
+                } else if (grandF.getLeftChild() == parent) {
+                    parentUncleAndGrandF[0] = parent;
+                    parentUncleAndGrandF[1] = grandF.getRightChild();
+                    parentUncleAndGrandF[2] = grandF;
+                    return parentUncleAndGrandF;
+                }
+            }
+            parentUncleAndGrandF[0] = parent;
+            parentUncleAndGrandF[1] = null;
+            parentUncleAndGrandF[2] = null;
+
+            return parentUncleAndGrandF;
         }
 
         private boolean isRed(Node node) {
