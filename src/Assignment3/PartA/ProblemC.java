@@ -7,11 +7,8 @@ import java.io.*;
  *         27.10.2015
  */
 public class ProblemC {
-    private static final boolean RED = true;
-    private static final boolean BLACK = false;
-
-    private static final String IN_FILE_NAME = "rbt.in";
-    private static final String OUT_FILE_NAME = "rbt.out";
+    private static final String IN_FILE_NAME = "rbt_in_2.txt";
+    private static final String OUT_FILE_NAME = "rbt_out_2.txt";
 
     public static void main(String[] args) throws IOException {
         //read data from input file
@@ -122,131 +119,144 @@ public class ProblemC {
 
         public void insert(int key) {
             if (root == null) {
-                root = new Node(key, BLACK); //root is black
+                root = new Node(key, BLACK);
             } else {
-                Node parent = root;
                 Node focusNode = root;
+                Node child = root;
 
-                Node newNode = new Node(key, RED); //new node is always red
+                Node newNode = new Node(key, RED);
 
-                while (focusNode != null) {
+                while (child != null) {
                     if (key < focusNode.getKey()) {
-                        parent = focusNode;
-                        focusNode = focusNode.getLeftChild();
-                    } else {
-                        parent = focusNode;
-                        focusNode = focusNode.getRightChild();
+                        focusNode = child;
+                        child = child.getLeftChild();
+                    } else if (key > focusNode.getKey()) {
+                        focusNode = child;
+                        child = child.getRightChild();
                     }
                 }
 
-                if (key < parent.getKey()) {
-                    parent.setLeftChild(newNode);
+                if (key < focusNode.getKey()) {
+                    focusNode.setLeftChild(newNode);
                 } else {
-                    parent.setRightChild(newNode);
+                    focusNode.setRightChild(newNode);
                 }
 
-                if (!isBalancedAfterInsertion(parent)) {
-                    Node[] uncleAndGrandF = getUncle(parent);
-                    balanceAfterInsertion(newNode, parent, uncleAndGrandF);
+                if (!isBalanced(focusNode)) {
+                    balance(newNode);
                 }
             }
         }
 
-        private void balanceAfterInsertion(Node newNode, Node parent, Node[] uncleAndGrandF) {
-            Node uncle = uncleAndGrandF[0];
-            Node grandF = uncleAndGrandF[1];
+        private void balance(Node child) {
+            Node[] parentUncleAndGrandF = getParentUncleAndGrandF(child); //returns array{parent, uncle, grandF}
+            Node parent = parentUncleAndGrandF[0];
+            Node uncle = parentUncleAndGrandF[1];
+            Node grandF = parentUncleAndGrandF[2];
 
             if (isRed(uncle)) {
                 //recoloring
-                parent.setColor(BLACK);
-                uncle.setColor(BLACK); //setting uncle's color black
-                grandF.setColor(RED); // setting grandF's color red
-
-                if (isRed(root)) {
-                    root.setColor(BLACK);
-                }
+                recolor(parent, uncle, grandF);
             } else {
-                //rotations
-                if (grandF.getLeftChild() == parent) {
-                    if (newNode == parent.getLeftChild()) {
-                        rightRotation(grandF);
-                    } else if (newNode == parent.getRightChild()) {
-                        leftRotation(parent);
-                        rightRotation(grandF);
-                    } else {
-                        System.out.println("SOMETHING UNEXPECTED HAPPENED!");
-                    }
-                } else {
-                    if (parent.getRightChild() == newNode) {
-                        leftRotation(grandF);
-                    } else {
-                        rightRotation(parent);
-                        leftRotation(grandF);
-                    }
-                }
+                //restructuring
+                restructure(child, parent, grandF);
             }
         }
 
-        private void leftRotation(Node parent) {
-            Node a = parent;
-            Node x = parent.getRightChild();
-
-            Node newANode = new Node(a.getKey(), a.getColor());
-            newANode.setLeftChild(a.getLeftChild());
-            newANode.setRightChild(x.getLeftChild());
-
-            a.setKey(x.getKey());
-            a.setRightChild(x.getRightChild());
-            a.setLeftChild(newANode);
+        private boolean isBalanced(Node parent) {
+            if (isRed(parent)) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
-        private void rightRotation(Node grandF) {
-            Node b = grandF;
-            Node a = grandF.getRightChild();
+        private void restructure(Node x, Node y, Node z) {
+            //case 1:
+            if (z.getLeftChild() == y && y.getLeftChild() == x) {
+                flipColors(y, z);
 
-            b.setColor(a.getColor());
-            a.setColor(!b.getColor());
-
-            b.setLeftChild(a.getRightChild());
-            a.setRightChild(b);
+                z.setLeftChild(y.getRightChild());
+                y.setRightChild(z);
+            }
+            //case 2:
+            else if (z.getLeftChild() == y && y.getRightChild() == x) {
+                z.setLeftChild(x.getRightChild());
+                y.setRightChild(x.getLeftChild());
+                x.setRightChild(z);
+                x.setLeftChild(y);
+                flipColors(x, z);
+            }
+            //case 3:
+            else if (z.getRightChild() == y && y.getRightChild() == x) {
+                z.setRightChild(y.getLeftChild());
+                y.setLeftChild(z);
+                flipColors(y, z);
+            }
+            //case 4:
+            else if (z.getRightChild() == y && y.getLeftChild() == x) {
+                y.setLeftChild(x.getRightChild());
+                z.setRightChild(x.getLeftChild());
+                x.setLeftChild(z);
+                x.setRightChild(y);
+                flipColors(x, z);
+            }
         }
 
-        private Node[] getUncle(Node parent) {
-            Node[] uncleAndGranF = new Node[2];
+        private void recolor(Node y, Node s, Node z) {
+            if (z != root) {
+                y.setColor(BLACK);
+                s.setColor(BLACK);
+                z.setColor(RED);
+
+                if (!isBalanced(z)) {
+                    balance(z);
+                }
+            } else {
+                y.setColor(BLACK);
+                s.setColor(BLACK);
+            }
+        }
+
+        private Node[] getParentUncleAndGrandF(Node child) {
+            Node[] parentUncleAndGrandF = new Node[3];
 
             Node grandF = root;
+            Node parent = root;
             Node focusNode = root;
-            while (parent.getKey() != focusNode.getKey()) {
-                if (parent.getKey() < focusNode.getKey()) {
-                    grandF = focusNode;
+
+            while (child.getKey() != focusNode.getKey()) {
+                grandF = parent;
+                if (child.getKey() < focusNode.getKey()) {
+                    parent = focusNode;
                     focusNode = focusNode.getLeftChild();
                 } else {
-                    grandF = focusNode;
+                    parent = focusNode;
                     focusNode = focusNode.getRightChild();
                 }
             }
-            if (grandF.getRightChild() == focusNode) {
-                uncleAndGranF[0] = grandF.getLeftChild();
-                uncleAndGranF[1] = grandF;
-                return uncleAndGranF;
+            if (grandF.getRightChild() == parent) {
+                parentUncleAndGrandF[0] = parent;
+                parentUncleAndGrandF[1] = grandF.getLeftChild();
+                parentUncleAndGrandF[2] = grandF;
+                return parentUncleAndGrandF;
             } else {
-                uncleAndGranF[0] = grandF.getRightChild();
-                uncleAndGranF[1] = grandF;
-                return uncleAndGranF;
+                parentUncleAndGrandF[0] = parent;
+                parentUncleAndGrandF[1] = grandF.getRightChild();
+                parentUncleAndGrandF[2] = grandF;
+                return parentUncleAndGrandF;
             }
         }
 
-        private boolean isBalancedAfterInsertion(Node node) {
-            if (!isRed(node)) {
-                return true;
-            } else {
-                return false;
-            }
+        private void flipColors(Node redNode, Node blackNode) {
+            boolean tmp = redNode.getColor();
+            redNode.setColor(blackNode.getColor());
+            blackNode.setColor(tmp);
         }
 
         private boolean isRed(Node node) {
             if (node == null) {
-                return BLACK;
+                return false;
             } else {
                 return node.getColor();
             }
