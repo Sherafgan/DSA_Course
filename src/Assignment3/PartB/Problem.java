@@ -1,4 +1,4 @@
-package Practice.Compt;
+package Assignment3.PartB;
 
 import java.io.*;
 
@@ -7,55 +7,86 @@ import java.io.*;
  *         03.11.2015
  */
 public class Problem {
-    private static final String IN_FILE_NAME = "data.in";
-    private static final String OUT_FILE_NAME = "data.out";
+    private static final String IN_FILE_NAME = "data3.in";
+    private static final String OUT_FILE_NAME = "data3.out";
 
-    private static final int COORDINATES_IN_ONE_MINUTE = 60000;
-
-    private static final int ONE_EXPERIMENT_LENGTH_IN_MINUTES = 5;
 
     public static void main(String[] args) throws IOException {
+        long timeTaken = System.currentTimeMillis();
+        //reading data to one string line
         String inputDataLine = readInData();
+
         if (inputDataLine.length() != 0) {
-            String[] coordinates = inputDataLine.trim().split("\\s");
+
+            //splitting it to array
+            String[] inputDataArrayOfStrings = inputDataLine.trim().split("\\s");
+
+            //parsing to integer
+            int[] inputDataArray = intToString(inputDataArrayOfStrings);
 
             MyRBTree myRBTree = new MyRBTree();
 
+            int distance = 0; //instantiated here because we will need last distance
+
             String lineToPrint = "";
 
-            int distance = 0;
 
-            for (int j = 0; j < coordinates.length; j += 2) {
-                distance = calculateDistance(0, 0, Integer.parseInt(coordinates[j]), Integer.parseInt(coordinates[j + 1]));
+            for (int i = 0; i < inputDataArray.length; i += 2) {
+                distance = getDistanceBetween(0, 0, inputDataArray[i], inputDataArray[i + 1]);
                 myRBTree.insert(distance);
-                if (j == 1000) {
-                    //write needed data
-                    lineToPrint = lineToPrint + " " + myRBTree.maxValue() + " " + myRBTree.minValue();
+                if (i > 1 && (i % 1000 == 0) || (i > 1 && i % 1000 == 999)) { // one minute passed
+                    lineToPrint = lineToPrint + " " + myRBTree.minValue() + " " + myRBTree.maxValue();
                     lineToPrint = lineToPrint.trim();
+                    System.out.println(i + " : " + lineToPrint);
                 }
             }
 
-            lineToPrint = lineToPrint + " " + myRBTree.minValue() + " " + myRBTree.maxValue();
-            lineToPrint = lineToPrint.trim();
-
-            int successor = myRBTree.getSuccessor();
-            int predecessor = myRBTree.getPredecessor();
-
-            if (Math.abs(distance - successor) > Math.abs(distance - predecessor)) {
-                lineToPrint = lineToPrint + " " + successor;
-            } else {
-                lineToPrint = lineToPrint + " " + predecessor;
+            if (inputDataArray.length % 1000 != 0) {
+                lineToPrint = lineToPrint + " " + myRBTree.minValue() + " " + myRBTree.maxValue();
+                lineToPrint = lineToPrint.trim();
             }
 
+            //now 'distance' is the distance to the last point added
+            int nearestDistance = getNearestDistanceTo(myRBTree, distance);
+
+            lineToPrint = lineToPrint + " " + nearestDistance;
+            lineToPrint = lineToPrint.trim();
+
+            //writing data to file
             writeOutData(lineToPrint);
+
+            System.out.println(lineToPrint);
+
+            timeTaken = System.currentTimeMillis() - timeTaken;
+            System.out.println("=================================");
+            System.out.println("MS: " + timeTaken);
+            System.out.println("Second(s): " + timeTaken / 1000);
         } else {
             writeOutData(" ");
         }
     }
 
-    private static int calculateDistance(int xA, int yA, int xB, int yB) {
+    private static int[] intToString(String[] inputDataArrayOfStrings) {
+        int[] inputDataArray = new int[inputDataArrayOfStrings.length];
+        for (int i = 0; i < inputDataArrayOfStrings.length; i++) {
+            inputDataArray[i] = Integer.parseInt(inputDataArrayOfStrings[i]);
+        }
+        return inputDataArray;
+    }
+
+    private static int getNearestDistanceTo(MyRBTree myRBTree, int distance) {
+        int determinatorOfNearestDistance;
+        int successorOfLastDistance = myRBTree.getSuccessorOf(distance);
+        int predecessorOfLastDistance = myRBTree.getPredecessorOf(distance);
+
+        determinatorOfNearestDistance = Math.min(Math.abs(distance - successorOfLastDistance), Math.abs(distance - predecessorOfLastDistance));
+
+        return determinatorOfNearestDistance + distance;
+    }
+
+    private static int getDistanceBetween(int xA, int yA, int xB, int yB) {
         int distance;
-        distance = (int) Math.sqrt(((xB - xA) * (xB - xA)) + ((yB - yA) * (yB - yA)));
+        distance = (int) (Math.round(Math.sqrt((xB - xA) * (xB - xA) + (yB - yA) * (yB - yA))));
         return distance;
     }
 
@@ -82,7 +113,7 @@ public class Problem {
         return inputDataLine;
     }
 
-    public static class MyRBTree {
+    private static class MyRBTree {
         private static final boolean RED = true;
         private static final boolean BLACK = false;
 
@@ -122,6 +153,8 @@ public class Problem {
                     } else if (key > child.getKey()) {
                         focusNode = child;
                         child = child.getRightChild();
+                    } else {
+                        return;
                     }
                 }
 
@@ -298,8 +331,34 @@ public class Problem {
             }
         }
 
+        public int getSuccessorOf(int key) {
+            Node parentOfNeededNode = find(key);
+            Node neededNode = parentOfNeededNode.getLeftChild();
+            if (neededNode != null) {
+                return max(neededNode).getKey();
+            } else {
+                Node[] parentUncleAndGrandF = getParentUncleAndGrandF(parentOfNeededNode);
+                return parentUncleAndGrandF[0].getKey(); //returning parent's key
+            }
+        }
+
+        public int getPredecessorOf(int key) {
+            Node parentOfNeededNode = find(key);
+            Node neededNode = parentOfNeededNode.getRightChild();
+            if (neededNode != null) {
+                return min(neededNode).getKey();
+            } else {
+                Node[] parentUncleAndGrandF = getParentUncleAndGrandF(parentOfNeededNode);
+                return parentUncleAndGrandF[0].getKey(); //returning parent's key
+            }
+        }
+
         public int getSuccessor() {
-            return min(root.getRightChild()).getKey();
+            if (root.getRightChild() != null) {
+                return min(root.getRightChild()).getKey();
+            } else {
+                return root.getKey();
+            }
         }
 
         public int getPredecessor() {
@@ -355,4 +414,5 @@ public class Problem {
             }
         }
     }
+
 }

@@ -220,6 +220,18 @@ public class MyRBTree {
         }
     }
 
+    public int getSuccessor() {
+        return min(root.getRightChild()).getKey();
+    }
+
+    public int getPredecessor() {
+        if (root.getLeftChild() != null) {
+            return max(root.getLeftChild()).getKey();
+        } else {
+            return root.getKey();
+        }
+    }
+
     private class Node {
         private int key;
         private boolean color;
