@@ -7,8 +7,8 @@ import java.io.*;
  *         03.11.2015
  */
 public class Problem {
-    private static final String IN_FILE_NAME = "data3.in";
-    private static final String OUT_FILE_NAME = "data3.out";
+    private static final String IN_FILE_NAME = "data.in";
+    private static final String OUT_FILE_NAME = "data.out";
 
 
     public static void main(String[] args) throws IOException {
@@ -22,7 +22,7 @@ public class Problem {
             String[] inputDataArrayOfStrings = inputDataLine.trim().split("\\s");
 
             //parsing to integer
-            int[] inputDataArray = intToString(inputDataArrayOfStrings);
+            int[] inputDataArray = stringToInteger(inputDataArrayOfStrings);
 
             MyRBTree myRBTree = new MyRBTree();
 
@@ -34,14 +34,14 @@ public class Problem {
             for (int i = 0; i < inputDataArray.length; i += 2) {
                 distance = getDistanceBetween(0, 0, inputDataArray[i], inputDataArray[i + 1]);
                 myRBTree.insert(distance);
-                if (i > 1 && (i % 1000 == 0) || (i > 1 && i % 1000 == 999)) { // one minute passed
+                if (i > 1 && (i % 60000 == 0) || (i > 1 && i % 60000 == 999)) { // one minute passed
                     lineToPrint = lineToPrint + " " + myRBTree.minValue() + " " + myRBTree.maxValue();
                     lineToPrint = lineToPrint.trim();
                     System.out.println(i + " : " + lineToPrint);
                 }
             }
 
-            if (inputDataArray.length % 1000 != 0) {
+            if (inputDataArray.length % 60000 != 0) {
                 lineToPrint = lineToPrint + " " + myRBTree.minValue() + " " + myRBTree.maxValue();
                 lineToPrint = lineToPrint.trim();
             }
@@ -66,7 +66,7 @@ public class Problem {
         }
     }
 
-    private static int[] intToString(String[] inputDataArrayOfStrings) {
+    private static int[] stringToInteger(String[] inputDataArrayOfStrings) {
         int[] inputDataArray = new int[inputDataArrayOfStrings.length];
         for (int i = 0; i < inputDataArrayOfStrings.length; i++) {
             inputDataArray[i] = Integer.parseInt(inputDataArrayOfStrings[i]);
