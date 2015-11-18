@@ -9,7 +9,7 @@ import org.omg.CORBA.StringHolder;
  * @author Sherafgan Kandov
  *         17.11.15
  */
-public class MyBinaryMinHeapTests extends TestCase {
+public class MyBinaryHeapTests extends TestCase {
     @Test
     public void test() {
         MyBinaryHeap<Integer, StringHolder> myBinaryHeap = new MyBinaryHeap<>();

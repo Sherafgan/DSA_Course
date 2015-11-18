@@ -17,14 +17,5 @@ public class dsf {
         priorityQueue.remove();
         System.out.println(priorityQueue.poll());
         System.out.println(priorityQueue.peek());
-
-        System.out.println();
-        System.out.println("Max".hashCode());
-        System.out.println("Jonh".hashCode());
-        System.out.println("Bruce".hashCode());
-
-        System.out.println("=================");
-        System.out.println("John".compareTo("Max"));
-        System.out.println("Bruce".compareTo("John"));
     }
 }

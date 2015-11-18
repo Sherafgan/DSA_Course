@@ -1,8 +1,5 @@
 package Practice.SortingAlgorithms;
 
-import Practice.Comparators.MyIntegerComparator;
-import Practice.Comparators.MyStringComparator;
-
 /**
  * @author Sherafgan Kandov
  *         25.09.2015

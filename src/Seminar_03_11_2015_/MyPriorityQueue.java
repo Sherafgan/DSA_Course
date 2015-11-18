@@ -1,7 +1,5 @@
 package Seminar_03_11_2015_;
 
-import org.omg.CORBA.StringHolder;
-
 import java.util.*;
 
 /**
@@ -47,8 +45,7 @@ public class MyPriorityQueue<V> implements Queue<V> {
 
     @Override
     public boolean offer(Object o) {
-        myBinaryHeap.put(o, o);
-        return true;
+        return myBinaryHeap.put(o, o);
     }
 
     @Override
@@ -93,9 +90,7 @@ public class MyPriorityQueue<V> implements Queue<V> {
 
     @Override
     public V poll() {
-        V valueToReturn = myBinaryHeap.getMin();
-        myBinaryHeap.removeMin();
-        return valueToReturn;
+        return myBinaryHeap.removeMin();
     }
 
 
@@ -106,6 +101,6 @@ public class MyPriorityQueue<V> implements Queue<V> {
 
     @Override
     public V peek() {
-        return myBinaryHeap.removeMin();
+        return myBinaryHeap.getMin();
     }
 }

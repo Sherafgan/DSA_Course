@@ -15,9 +15,13 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
     private Node<K, V>[] heap;
     private int size;
 
+    MyComparator myComparator;
+
     public MyBinaryHeap() {
         heap = new Node[DEFAULT_SIZE_OF_ARRAY];
         size = 0;
+
+        myComparator = new MyComparator();
     }
 
     public MyBinaryHeap(K[] keys, V[] values) {
@@ -40,7 +44,7 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
     @Override
     public boolean containsKey(Object key) {
         for (int i = 0; i < size; i++) {
-            if (heap[i].getKey().compareTo(key) == 0) {
+            if (myComparator.compare(heap[i].getKey(), key) == 0) {
                 return true;
             }
         }
@@ -73,19 +77,37 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
             }
             size++;
 
+            if (size == heap.length) {
+                doubleHeapSize();
+            }
+
             return true;
         } else {
             throw new NullPointerException("Input has 'null' key or value!");
         }
     }
 
+    private void doubleHeapSize() {
+        Node<K, V>[] newHeap = new Node[heap.length * 2];
+        for (int i = 0; i < heap.length; i++) {
+            newHeap[i] = heap[i];
+        }
+        heap = newHeap;
+    }
+
     private void upHeap(int indexOfNode) {
         Node node = heap[indexOfNode];
         int i = indexOfNode;
-        while (i > 0 && heap[(i - 1) / 2].getKey().compareTo(node.getKey()) == 1) {
+//        while (i > 0 && heap[(i - 1) / 2].getKey().compareTo(node.getKey()) == 1) { //was
+        while (i > 0 && (myComparator.compare(heap[(i - 1) / 2].getKey(), node.getKey()) == 1)) {
             Node tmp = heap[i];
-            heap[i] = heap[i / 2];
-            heap[i / 2] = tmp;
+//            if (i == size) {
+            heap[i] = heap[(i - 1) / 2];
+            heap[(i - 1) / 2] = tmp;
+//            } else {
+//                heap[i] = heap[i / 2];
+//                heap[i / 2] = tmp;
+//            }
 
             i = (i - 1) / 2;
         }
@@ -100,7 +122,8 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
         int i = indexOfNode;
         int childIndex = findSmallerChild(i);
 
-        while (childIndex != 0 && heap[childIndex].getKey().compareTo(heap[i].key) == 1) {
+//        while (childIndex != 0 && heap[childIndex].getKey().compareTo(heap[i].key) == 1) { //was
+        while (childIndex != 0 && (myComparator.compare(heap[childIndex].getKey(), heap[i].getKey()) == -1)) {
             Node tmp = heap[childIndex];
             heap[childIndex] = heap[i];
             heap[i] = tmp;
@@ -110,15 +133,16 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
     }
 
     private int findSmallerChild(int indexOfParent) {
-        if ((2 * indexOfParent + 1) < size - 2) {
+        if ((2 * indexOfParent + 2) < size) {
             //two children
-            if (heap[2 * indexOfParent + 1].getKey().compareTo(heap[2 * indexOfParent + 2].getKey()) == 1) {
-                //left child is smaller
+//            if (heap[2 * indexOfParent + 1].getKey().compareTo(heap[2 * indexOfParent + 2].getKey()) == 1) {
+            if (myComparator.compare(heap[2 * indexOfParent + 1].getKey(), heap[2 * indexOfParent + 2].getKey()) == -1) {
+//                left child is smaller
                 return 2 * indexOfParent + 1;
             } else {
                 return 2 * indexOfParent + 2;
             }
-        } else if ((2 * indexOfParent + 1) == size - 2) {
+        } else if ((2 * indexOfParent + 2) == size) {
             //node has one child
             return 2 * indexOfParent + 1;
         } else {
@@ -166,18 +190,17 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
     }
 
     public V removeMin() {
-        V valueToReturn = heap[ROOT_INDEX].getValue();
         //remove min
         if (size == 0) {
             throw new NullPointerException("EMPTY HEAP");
         } else {
+            V valueToReturn = heap[ROOT_INDEX].getValue();
             heap[ROOT_INDEX] = heap[size - 1];
             heap[size - 1] = null;
             size--;
             downHeap(ROOT_INDEX);
+            return valueToReturn;
         }
-
-        return valueToReturn;
     }
 
 
