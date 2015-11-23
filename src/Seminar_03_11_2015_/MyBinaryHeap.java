@@ -199,6 +199,7 @@ public class MyBinaryHeap<K extends Comparable, V> implements Map {
             heap[size - 1] = null;
             size--;
             downHeap(ROOT_INDEX);
+
             return valueToReturn;
         }
     }
