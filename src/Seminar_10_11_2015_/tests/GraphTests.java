@@ -160,5 +160,13 @@ public class GraphTests extends TestCase {
 
         graph.removeVertex("F");
         assertSame(graph.amountOfEdges(), 12);
+
+        assertSame(graph.opposite("F", 36), null);
+        assertSame(graph.opposite("F", 42), null);
+        assertSame(graph.opposite("F", 18), null);
+        assertSame(graph.opposite("F", 39), null);
+        assertSame(graph.opposite("F", 24), null);
+
+        assertFalse(graph.areAdjacent("B", "F"));
     }
 }

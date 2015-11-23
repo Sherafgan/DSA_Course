@@ -17,7 +17,7 @@ public class Graph<TDataValue, TWeight> {
             throw new IllegalArgumentException("Vertex with value '" + value + "' already exists in graph!");
         } else {
             //Complexity: O(1)
-            Vertex vertexToAdd = new Vertex(value, vertices.size());
+            Vertex vertexToAdd = new Vertex(value);
             vertices.add(vertexToAdd);
         }
     }
@@ -29,7 +29,7 @@ public class Graph<TDataValue, TWeight> {
             throw new NullPointerException("'There is no 'destination' vertex!");
         } else {
             //Complexity: O(1)
-            Edge edgeToAdd = new Edge(origin, destination, weight, edges.size());
+            Edge edgeToAdd = new Edge(origin, destination, weight);
             edges.add(edgeToAdd);
         }
     }
@@ -174,12 +174,9 @@ public class Graph<TDataValue, TWeight> {
 
     private class Vertex {
         private TDataValue value;
-        private int listPosition;
-        private int adjacencyListPosition;
 
-        public Vertex(TDataValue value, int listPosition) {
+        public Vertex(TDataValue value) {
             this.value = value;
-            this.listPosition = listPosition;
         }
 
         public TDataValue getValue() {
@@ -189,38 +186,17 @@ public class Graph<TDataValue, TWeight> {
         public void setValue(TDataValue value) {
             this.value = value;
         }
-
-        public int getListPosition() {
-            return listPosition;
-        }
-
-        public void setListPosition(int listPosition) {
-            this.listPosition = listPosition;
-        }
-
-        public int getAdjacencyListPosition() {
-            return adjacencyListPosition;
-        }
-
-        public void setAdjacencyListPosition(int adjacencyListPosition) {
-            this.adjacencyListPosition = adjacencyListPosition;
-        }
     }
 
     private class Edge {
         private TDataValue origin;
         private TDataValue destination;
         private TWeight weight;
-        private int listPosition;
 
-        private int adjacencyListPosition1;
-        private int getAdjacencyListPosition2;
-
-        public Edge(TDataValue origin, TDataValue destination, TWeight weight, int listPosition) {
+        public Edge(TDataValue origin, TDataValue destination, TWeight weight) {
             this.origin = origin;
             this.destination = destination;
             this.weight = weight;
-            this.listPosition = listPosition;
         }
 
         public TDataValue getOrigin() {
@@ -245,30 +221,6 @@ public class Graph<TDataValue, TWeight> {
 
         public void setWeight(TWeight weight) {
             this.weight = weight;
-        }
-
-        public int getListPosition() {
-            return listPosition;
-        }
-
-        public void setListPosition(int listPosition) {
-            this.listPosition = listPosition;
-        }
-
-        public int getAdjacencyListPosition1() {
-            return adjacencyListPosition1;
-        }
-
-        public void setAdjacencyListPosition1(int adjacencyListPosition1) {
-            this.adjacencyListPosition1 = adjacencyListPosition1;
-        }
-
-        public int getAdjacencyListPosition2() {
-            return getAdjacencyListPosition2;
-        }
-
-        public void setGetAdjacencyListPosition2(int getAdjacencyListPosition2) {
-            this.getAdjacencyListPosition2 = getAdjacencyListPosition2;
         }
     }
 }
