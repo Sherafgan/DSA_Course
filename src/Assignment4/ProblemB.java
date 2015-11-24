@@ -1,5 +1,8 @@
 package Assignment4;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -10,10 +13,22 @@ public class ProblemB {
     private static final String IN_FILE_NAME = "cities.txt";
     private static final String OUT_FILE_NAME = "able.txt";
 
+    private static final String EMPTY = " ";
+    private static final String QUESTION = "?";
+    private static final String EXCLAMATION = "!";
+
     static Graph<String, String> graph;
 
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) throws IOException {
+        BufferedReader inFile = new BufferedReader(new FileReader(IN_FILE_NAME));
+        String firstLine = inFile.readLine();
+        String secondLine = inFile.readLine();
+        inFile.close();
+
+        String[] firstLineData = firstLine.trim().split("\\s");
+        String[] secondLineData = secondLine.trim().split("\\s");
+
+        graph = new Graph<>();
     }
 
     static class Graph<TDataValue, TWeight> {

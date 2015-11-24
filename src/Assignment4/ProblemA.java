@@ -36,50 +36,58 @@ public class ProblemA {
 
         List<String> listOfSortedAdjacentVertices1 = sortedAdjacentVertices("Donetsk-DU");
         List<String> listOfSortedAdjacentVertices2 = sortedAdjacentVertices("Kiev-U");
-//        List<String> listOfSortedAdjacentVertices3 = sortedAdjacentVertices("Lviv-U");
+        List<String> listOfSortedAdjacentVertices3 = sortedAdjacentVertices("Lviv-U");
         List<String> listOfSortedAdjacentVertices4 = sortedAdjacentVertices("Batumi-G");
         List<String> listOfSortedAdjacentVertices5 = sortedAdjacentVertices("Rostov-R");
 
         String line1ToWrite = makeLine(listOfSortedAdjacentVertices1);
         String line2ToWrite = makeLine(listOfSortedAdjacentVertices2);
-//        String line3ToWrite = makeLine(listOfSortedAdjacentVertices3);
+        String line3ToWrite = makeLine(listOfSortedAdjacentVertices3);
         String line4ToWrite = makeLine(listOfSortedAdjacentVertices4);
         String line5ToWrite = makeLine(listOfSortedAdjacentVertices5);
 
         PrintWriter outFile = new PrintWriter(new FileWriter(OUT_FILE_NAME));
         outFile.write(line1ToWrite + "\n");
         outFile.write(line2ToWrite + "\n");
-//        outFile.write(line3ToWrite + "\n");
+        outFile.write(line3ToWrite + "\n");
         outFile.write(line4ToWrite + "\n");
         outFile.write(line5ToWrite + "\n");
         outFile.close();
     }
 
-    private static String makeLine(List<String> listOfSortedAdacentVertices) {
-        String lineToWrite = "";
-        for (int i = 0; i < listOfSortedAdacentVertices.size(); i++) {
-            lineToWrite = lineToWrite + listOfSortedAdacentVertices.get(i) + " ";
-        }
-        lineToWrite = lineToWrite.trim();
+    private static String makeLine(List<String> listOfSortedAdjacentVertices) {
+        String lineToWrite = EMPTY;
+        if (listOfSortedAdjacentVertices != null) {
+            for (int i = 0; i < listOfSortedAdjacentVertices.size(); i++) {
+                lineToWrite = lineToWrite + listOfSortedAdjacentVertices.get(i) + " ";
+            }
+            lineToWrite = lineToWrite.trim();
 
-        return lineToWrite;
+            return lineToWrite;
+        } else {
+            return lineToWrite;
+        }
     }
 
     private static List<String> sortedAdjacentVertices(String vertex) {
         List<String> adjacentVertices = graph.adjacentVertices(vertex);
-        Comparable[] unsortedAdjacentVertices = new Comparable[adjacentVertices.size()];
-        for (int i = 0; i < unsortedAdjacentVertices.length; i++) {
-            unsortedAdjacentVertices[i] = adjacentVertices.get(i);
-        }
+        if (adjacentVertices != null) {
+            Comparable[] unsortedAdjacentVertices = new Comparable[adjacentVertices.size()];
+            for (int i = 0; i < unsortedAdjacentVertices.length; i++) {
+                unsortedAdjacentVertices[i] = adjacentVertices.get(i);
+            }
 
-        MyHeapSort myHeapSort = new MyHeapSort();
-        Comparable[] sortedAdjacentVertices = myHeapSort.heapsort(unsortedAdjacentVertices);
+            MyHeapSort myHeapSort = new MyHeapSort();
+            Comparable[] sortedAdjacentVertices = myHeapSort.heapsort(unsortedAdjacentVertices);
 
-        List<String> sortedAV = new ArrayList<>();
-        for (int i = 0; i < sortedAdjacentVertices.length; i++) {
-            sortedAV.add((String) sortedAdjacentVertices[i]);
+            List<String> sortedAV = new ArrayList<>();
+            for (int i = 0; i < sortedAdjacentVertices.length; i++) {
+                sortedAV.add((String) sortedAdjacentVertices[i]);
+            }
+            return sortedAV;
+        } else {
+            return null;
         }
-        return sortedAV;
     }
 
     static class Graph<TDataValue, TWeight> {
@@ -200,10 +208,14 @@ public class ProblemA {
         public List<String> adjacentVertices(TDataValue vertexValue) {
             //Complexity: O(#ofAdjacentVertices) => O(1)
             List<String> adjacentVertices = new ArrayList<>();
-            for (int i = 0; i < vertices.get(vertexValue).getAdjacencyList().size(); i++) {
-                adjacentVertices.add(vertices.get(vertexValue).getAdjacencyList().get(i).split("\\s")[1]);
+            if (vertices.get(vertexValue) != null) {
+                for (int i = 0; i < vertices.get(vertexValue).getAdjacencyList().size(); i++) {
+                    adjacentVertices.add(vertices.get(vertexValue).getAdjacencyList().get(i).split("\\s")[1]);
+                }
+                return adjacentVertices;
+            } else {
+                return null;
             }
-            return adjacentVertices;
         }
 
         public List<String> endVertices(TWeight weight) {
