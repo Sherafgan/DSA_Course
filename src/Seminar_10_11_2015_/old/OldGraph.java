@@ -1,26 +1,14 @@
 package Seminar_10_11_2015_.old;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Sherafgan Kandov
- *         24.11.15
+ *         19.11.15
  */
 public class OldGraph<TDataValue, TWeight> {
-//    private List<Vertex> vertices = new ArrayList<>();
-//    private List<Edge> edges = new ArrayList<>();
-
-    private HashMap<TDataValue, Vertex> vertices;
-    private HashMap<String, Edge> edges;
-
-    public OldGraph() {
-        vertices = new HashMap<>();
-        edges = new HashMap<>();
-    }
+    private List<Vertex> vertices = new ArrayList<>();
+    private List<Edge> edges = new ArrayList<>();
 
 
     public void insertVertex(TDataValue value) {
@@ -30,7 +18,7 @@ public class OldGraph<TDataValue, TWeight> {
         } else {
             //Complexity: O(1)
             Vertex vertexToAdd = new Vertex(value);
-            vertices.put(value, vertexToAdd);
+            vertices.add(vertexToAdd);
         }
     }
 
@@ -42,68 +30,62 @@ public class OldGraph<TDataValue, TWeight> {
         } else {
             //Complexity: O(1)
             Edge edgeToAdd = new Edge(origin, destination, weight);
-            String edgeKey = makeKeyForEdge(origin, destination, weight);
-            edges.put(edgeKey, edgeToAdd);
-            vertices.get(origin).setEdgeToAdjacencyList(edgeKey);
-            edgeKey = makeKeyForEdge(destination, origin, weight);
-            vertices.get(destination).setEdgeToAdjacencyList(edgeKey);
+            edges.add(edgeToAdd);
         }
-    }
-
-    private String makeKeyForEdge(TDataValue origin, TDataValue destination, TWeight weight) {
-        return "" + origin + " " + destination + " " + weight;
     }
 
     private boolean vertexExists(TDataValue vertexValue) {
-        //Complexity: O(1)
-        if (vertices.get(vertexValue) != null && vertices.get(vertexValue).getValue().equals(vertexValue)) {
-            return true;
-        } else {
-            return false;
+        //Complexity: O(#ofVertices)
+        for (int i = 0; i < vertices.size(); i++) {
+            if (vertices.get(i).getValue().equals(vertexValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeVertex(TDataValue value) {
+        //Complexity: O(#ofVertices * #ofEdges) TODO: O(1)
+        for (int i = 0; i < vertices.size(); i++) {
+            if (vertices.get(i).getValue().equals(value)) {
+                deleteIncidentEdges(i); //O(#ofEdges)
+                vertices.remove(i);
+            }
         }
     }
 
-    public void removeVertex(TDataValue vertexValue) {
-        //Complexity: O(#incidentEdges) => O(1)
-        //delete all incident edges
-        int tmp = vertices.get(vertexValue).getAdjacencyList().size();
-        for (int i = 0; i < tmp; i++) {
-            String edgeKey = vertices.get(vertexValue).getAdjacencyList().get(0);
-            boolean p1 = true;
-            boolean p2 = true;
-            if (p1) {
-                for (int j = 0; j < vertices.get(edgeKey.split("\\s")[1]).getAdjacencyList().size() && p1; j++) {
-                    String[] otherTableEdgeKey = vertices.get(edgeKey.split("\\s")[1]).getAdjacencyList().get(j).split("\\s");
-                    if (otherTableEdgeKey[0].equals(vertexValue) || otherTableEdgeKey[1].equals(vertexValue)) {
-                        vertices.get(edgeKey.split("\\s")[1]).getAdjacencyList().remove(j);
-                        p1 = false;
-                    }
-                }
+    private void deleteIncidentEdges(int indexOfVertexInTheList) {
+        //Complexity: O(#ofEdges)
+        int i = 0;
+        boolean p = true;
+        while (i < edges.size()) {
+            if (edges.size() > 0
+                    && edges.get(i).getOrigin().equals(vertices.get(indexOfVertexInTheList).getValue())) {
+                edges.remove(i);
+                p = false;
             }
-            if (p2) {
-                for (int j = 0; j < vertices.get(edgeKey.split("\\s")[0]).getAdjacencyList().size() && p2; j++) {
-                    String[] otherTableEdgeKey = vertices.get(edgeKey.split("\\s")[0]).getAdjacencyList().get(j).split("\\s");
-                    if (otherTableEdgeKey[0].equals(vertexValue) || otherTableEdgeKey[1].equals(vertexValue)) {
-                        vertices.get(edgeKey.split("\\s")[0]).getAdjacencyList().remove(j);
-                        p2 = false;
-                    }
-                }
+            if (edges.size() > 0
+                    && edges.get(i).getDestination().equals(vertices.get(indexOfVertexInTheList).getValue())) {
+                edges.remove(i);
+                p = false;
             }
-            if (edges.remove(edgeKey) == null) {
-                String[] splitterEdgeKey = edgeKey.split("\\s");
-                edges.remove("" + splitterEdgeKey[1] + " " + splitterEdgeKey[0] + " " + splitterEdgeKey[2]);
+            if (p) {
+                i++;
+            } else {
+                p = true;
             }
         }
-        //delete vertex
-        vertices.remove(vertexValue);
     }
 
     public void removeEdge(TDataValue origin, TDataValue destination, TWeight weight) {
-        //Complexity: O(1)
-        String keyOfEdgeToRemove = makeKeyForEdge(origin, destination, weight);
-        vertices.get(origin).getAdjacencyList().remove(keyOfEdgeToRemove);
-        vertices.get(destination).getAdjacencyList().remove(keyOfEdgeToRemove);
-        edges.remove(keyOfEdgeToRemove);
+        //Complexity: O(#ofEdges) TODO: O(1)
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges.get(i).getWeight().equals(weight)
+                    && edges.get(i).getOrigin().equals(origin)
+                    && edges.get(i).getDestination().equals(destination)) {
+                edges.remove(i);
+            }
+        }
     }
 
     public void removeAllEdgesWithWeight(TWeight weight) {
@@ -115,11 +97,14 @@ public class OldGraph<TDataValue, TWeight> {
         }
     }
 
-    public List<String> incidentEdges(TDataValue vertexValue) {
-        //Complexity: O(#incidentEdges) => O(1)
-        List<String> incidentEdges = new ArrayList<>();
-        for (int i = 0; i < vertices.get(vertexValue).getAdjacencyList().size(); i++) {
-            incidentEdges.add(vertices.get(vertexValue).getAdjacencyList().get(i).split("\\s")[2]);
+    public List<TWeight> incidentEdges(TDataValue vertexValue) {
+        //Complexity: O(#ofEdges)
+        List<TWeight> incidentEdges = new ArrayList<>();
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges.get(i).getOrigin().equals(vertexValue)
+                    || edges.get(i).getDestination().equals(vertexValue)) {
+                incidentEdges.add(edges.get(i).getWeight());
+            }
         }
         if (incidentEdges.size() == 0) {
             return null;
@@ -128,48 +113,55 @@ public class OldGraph<TDataValue, TWeight> {
         }
     }
 
-    public List<String> endVertices(TWeight weight) {
+    public List<TDataValue> endVertices(TWeight weight) {
         //Complexity: O(#ofEdges)
-        List<String> endVertices = new ArrayList<>();
-        Collection<Edge> edgesList = edges.values();
-        for (Edge edge : edgesList) {
-            if (edge.getWeight().equals(weight)) {
-                endVertices.add("" + edge.getOrigin());
-                endVertices.add("" + edge.getDestination());
+        List<TDataValue> endVertices = new ArrayList<>();
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges.get(i).getWeight().equals(weight)) {
+                endVertices.add(edges.get(i).getOrigin());
+                endVertices.add(edges.get(i).getDestination());
                 return endVertices;
             }
         }
         return null;
     }
 
-    public String opposite(TDataValue vertexValue, TWeight weight) {
-        //Complexity: O(#incidentEdges) => O(1)
-        if (vertices.get(vertexValue) != null) {
-            for (int i = 0; i < vertices.get(vertexValue).getAdjacencyList().size(); i++) {
-                String[] edgeKeyData = vertices.get(vertexValue).getAdjacencyList().get(i).split("\\s");
-                if (edgeKeyData[2].equals("" + weight)) {
-                    return edgeKeyData[1];
-                }
+    public TDataValue opposite(TDataValue vertexValue, TWeight weight) {
+        //Complexity: O(#ofEdges)
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges.get(i).getOrigin().equals(vertexValue) && edges.get(i).getWeight().equals(weight)) {
+                return edges.get(i).getDestination();
+            } else if (edges.get(i).getDestination().equals(vertexValue) && edges.get(i).getWeight().equals(weight)) {
+                return edges.get(i).getOrigin();
             }
         }
         return null;
     }
 
     public boolean areAdjacent(TDataValue firstVertexValue, TDataValue secondVertexValue) {
-        //Complexity: O(#incidentEdges) => O(1)
-        if (vertices.get(firstVertexValue) != null) {
-            for (int i = 0; i < vertices.get(firstVertexValue).getAdjacencyList().size(); i++) {
-                if (vertices.get(firstVertexValue).getAdjacencyList().get(i).split("\\s")[1].equals(secondVertexValue)) {
-                    return true;
-                }
+        //Complexity: O(#ofEdges) TODO: O(1)
+        for (int i = 0; i < edges.size(); i++) {
+            if ((edges.get(i).getOrigin().equals(firstVertexValue)
+                    && edges.get(i).getDestination().equals(secondVertexValue))
+                    || (edges.get(i).getDestination().equals(firstVertexValue)
+                    && edges.get(i).getOrigin().equals(secondVertexValue))) {
+                return true;
             }
         }
         return false;
     }
 
     public int degree(TDataValue vertexValue) {
-        //Complexity: O(1)
-        return vertices.get(vertexValue).getAdjacencyList().size();
+        //Complexity: O(#ofEdges) TODO: O(1)
+        int degree = 0;
+        for (int i = 0; i < edges.size(); i++) {
+            if ((edges.get(i).getOrigin().equals(vertexValue)
+                    || edges.get(i).getDestination().equals(vertexValue))
+                    && !edges.get(i).getOrigin().equals(edges.get(i).getDestination())) {
+                degree++;
+            }
+        }
+        return degree;
     }
 
     public int amountOfVertices() {
@@ -182,11 +174,9 @@ public class OldGraph<TDataValue, TWeight> {
 
     private class Vertex {
         private TDataValue value;
-        private List<String> adjacencyList;
 
         public Vertex(TDataValue value) {
             this.value = value;
-            adjacencyList = new ArrayList<>();
         }
 
         public TDataValue getValue() {
@@ -195,14 +185,6 @@ public class OldGraph<TDataValue, TWeight> {
 
         public void setValue(TDataValue value) {
             this.value = value;
-        }
-
-        public List<String> getAdjacencyList() {
-            return adjacencyList;
-        }
-
-        public void setEdgeToAdjacencyList(String edgeKey) {
-            adjacencyList.add(edgeKey);
         }
     }
 

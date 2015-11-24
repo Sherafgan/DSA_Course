@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 /**
  * @author Sherafgan Kandov
- *         18.11.15
+ *         24.11.15
  */
 public class MyComparator implements Comparator {
     @Override
