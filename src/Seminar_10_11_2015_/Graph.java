@@ -45,7 +45,7 @@ public class Graph<TDataValue, TWeight> {
     }
 
     public void removeVertex(TDataValue value) {
-        //Complexity: O(#ofVertices * #ofEdges)
+        //Complexity: O(#ofVertices * #ofEdges) TODO: O(1)
         for (int i = 0; i < vertices.size(); i++) {
             if (vertices.get(i).getValue().equals(value)) {
                 deleteIncidentEdges(i); //O(#ofEdges)
@@ -78,7 +78,7 @@ public class Graph<TDataValue, TWeight> {
     }
 
     public void removeEdge(TDataValue origin, TDataValue destination, TWeight weight) {
-        //Complexity: O(#ofEdges)
+        //Complexity: O(#ofEdges) TODO: O(1)
         for (int i = 0; i < edges.size(); i++) {
             if (edges.get(i).getWeight().equals(weight)
                     && edges.get(i).getOrigin().equals(origin)
@@ -139,7 +139,7 @@ public class Graph<TDataValue, TWeight> {
     }
 
     public boolean areAdjacent(TDataValue firstVertexValue, TDataValue secondVertexValue) {
-        //Complexity: O(#ofEdges)
+        //Complexity: O(#ofEdges) TODO: O(1)
         for (int i = 0; i < edges.size(); i++) {
             if ((edges.get(i).getOrigin().equals(firstVertexValue)
                     && edges.get(i).getDestination().equals(secondVertexValue))
@@ -152,12 +152,12 @@ public class Graph<TDataValue, TWeight> {
     }
 
     public int degree(TDataValue vertexValue) {
-        //Complexity: O(#ofEdges)
-        //implementation works only for ACYCLIC GRAPH
+        //Complexity: O(#ofEdges) TODO: O(1)
         int degree = 0;
         for (int i = 0; i < edges.size(); i++) {
-            if (edges.get(i).getOrigin().equals(vertexValue)
-                    || edges.get(i).getDestination().equals(vertexValue)) {
+            if ((edges.get(i).getOrigin().equals(vertexValue)
+                    || edges.get(i).getDestination().equals(vertexValue))
+                    && !edges.get(i).getOrigin().equals(edges.get(i).getDestination())) {
                 degree++;
             }
         }

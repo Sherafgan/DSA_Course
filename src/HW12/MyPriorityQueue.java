@@ -1,4 +1,4 @@
-package Seminar_03_11_2015_;
+package HW12;
 
 /**
  * @author Sherafgan Kandov
