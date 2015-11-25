@@ -45,7 +45,7 @@ public class OldGraph<TDataValue, TWeight> {
     }
 
     public void removeVertex(TDataValue value) {
-        //Complexity: O(#ofVertices * #ofEdges) TODO: O(1)
+        //Complexity: O(#ofVertices * #ofEdges)
         for (int i = 0; i < vertices.size(); i++) {
             if (vertices.get(i).getValue().equals(value)) {
                 deleteIncidentEdges(i); //O(#ofEdges)
@@ -78,7 +78,7 @@ public class OldGraph<TDataValue, TWeight> {
     }
 
     public void removeEdge(TDataValue origin, TDataValue destination, TWeight weight) {
-        //Complexity: O(#ofEdges) TODO: O(1)
+        //Complexity: O(#ofEdges)
         for (int i = 0; i < edges.size(); i++) {
             if (edges.get(i).getWeight().equals(weight)
                     && edges.get(i).getOrigin().equals(origin)
@@ -139,7 +139,7 @@ public class OldGraph<TDataValue, TWeight> {
     }
 
     public boolean areAdjacent(TDataValue firstVertexValue, TDataValue secondVertexValue) {
-        //Complexity: O(#ofEdges) TODO: O(1)
+        //Complexity: O(#ofEdges)
         for (int i = 0; i < edges.size(); i++) {
             if ((edges.get(i).getOrigin().equals(firstVertexValue)
                     && edges.get(i).getDestination().equals(secondVertexValue))
@@ -152,7 +152,7 @@ public class OldGraph<TDataValue, TWeight> {
     }
 
     public int degree(TDataValue vertexValue) {
-        //Complexity: O(#ofEdges) TODO: O(1)
+        //Complexity: O(#ofEdges)
         int degree = 0;
         for (int i = 0; i < edges.size(); i++) {
             if ((edges.get(i).getOrigin().equals(vertexValue)

@@ -1,17 +1,17 @@
-package Assignment4;
+package Seminar_10_11_2015_;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
  * @author Sherafgan Kandov
  *         24.11.15
  */
-public class ProblemB {
+public class Traversals {
     private static final String IN_FILE_NAME = "cities.txt";
     private static final String OUT_FILE_NAME = "able.txt";
-
-    private static final String HOMETOWN = "Rostov-R";
 
     private static final String EMPTY = "#";
     private static final String QUESTION = "?";
@@ -28,107 +28,36 @@ public class ProblemB {
         String secondLine = inFile.readLine();
         inFile.close();
 
-        String lineToPrint = "";
+        String[] firstLineData = firstLine.trim().split("\\s");
+        String[] secondLineData = secondLine.trim().split("\\s");
 
-        if (firstLine != null) {
-            String[] firstLineData = firstLine.trim().split("\\s");
-            String[] secondLineData = secondLine.trim().split("\\s");
+        graph = new Graph<>();
 
-            graph = new Graph<>();
+        readDataToGraph(firstLineData, secondLineData);
 
-            readDataToGraph(firstLineData, secondLineData);
+//        breadFirstSearch(graph);
 
-            List<String> hamiltonianCircuits = findHamiltonianCircuit(graph);
+//        depthFirstSearch(graph);
 
-            String[] hamiltonianCircuit = getFirstHamiltonianCircuitWithNoViolations(hamiltonianCircuits);
+//        String[] ham = findHC(graph);
 
-//            String[] hamiltonianCircuit = findHamiltonianCircuit(graph);
+//        String[] hamC = findHamCir(graph);
 
-            System.out.println(hamiltonianCircuit != null);
+//        breadFirstSearch(graph);
 
-            if (hamiltonianCircuit != null) {
-                lineToPrint = lineToPrint + "yes";
-            } else {
-                lineToPrint = lineToPrint + "no";
-            }
+        Queue<String> paths = new LinkedList<>();
+        paths.add("Rostov-R");
+        List<String> resultingPaths = findPath(paths);
 
-//            if (isThisHamiltonianCircuitWithNoViolations(hamiltonianCircuit)) {
-//                lineToPrint = lineToPrint + "yes";
-//            } else {
-//                lineToPrint = lineToPrint + "no";
-//            }
-
-            graph.removeEdge("Vladikavkaz-R", "Tbilisi-G", QUESTION);
-
-            if (isThisHamiltonianCircuitWithNoViolations(hamiltonianCircuit)) {
-                lineToPrint = lineToPrint + " " + "yes";
-            } else {
-                lineToPrint = lineToPrint + " " + "no";
-            }
-        }
-
-        //write data
-        PrintWriter outFile = new PrintWriter(new FileWriter(OUT_FILE_NAME));
-        outFile.write(lineToPrint);
-        outFile.close();
+        System.out.println(resultingPaths.size());
+        System.out.println(resultingPaths.get(0));
     }
 
-    private static String[] getFirstHamiltonianCircuitWithNoViolations(List<String> hamiltonianCircuits) {
-        for (String s : hamiltonianCircuits) {
-            String[] hamiltonianCircuit = s.split("\\s");
-            if (isThisHamiltonianCircuitWithNoViolations(hamiltonianCircuit)) {
-                return hamiltonianCircuit;
-            }
-        }
+    public Map<String, List<String>> findPath(String path) {
         return null;
     }
 
-    private static boolean isThisHamiltonianCircuitWithNoViolations(String[] hamiltonianCircuit) {
-        if (hamiltonianCircuit != null) {
-            for (int i = 0; i < hamiltonianCircuit.length - 1; i++) {
-                String oppositeVertex = graph.opposite(hamiltonianCircuit[i], EXCLAMATION);
-                if (oppositeVertex != null && oppositeVertex.equals(hamiltonianCircuit[i + 1])) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    private static void readDataToGraph(String[] firstLineData, String[] secondLineData) {
-        for (String s : firstLineData) {
-            graph.insertVertex(s);
-        }
-
-        for (int i = 0; i < secondLineData.length; i += 2) {
-            if (((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
-                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DU"))
-                    || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DU")
-                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))
-                    || ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
-                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DG"))
-                    || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DG")
-                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))) {
-                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EXCLAMATION);
-            } else if ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-U")
-                    || secondLineData[i].substring(secondLineData[i].length() - 2).equals("-G")) ||
-                    (secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-U")
-                            || secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-G"))) {
-                graph.insertEdge(secondLineData[i], secondLineData[i + 1], QUESTION);
-            } else {
-                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EMPTY);
-            }
-        }
-    }
-
-    private static List<String> findHamiltonianCircuit(Graph<String, String> graph) {
-        Queue<String> paths = new LinkedList<>();
-        paths.add(HOMETOWN);
-        return findPath(paths);
-    }
+    static List<String> paths = new LinkedList<>();
 
     private static List<String> findPath(Queue<String> paths) {
         List<String> resultingPaths = new LinkedList<>();
@@ -172,15 +101,72 @@ public class ProblemB {
         return false;
     }
 
-    private static void colorWhiteVerticesOutOfCircuit(Stack stack) {
+    private static String[] findHamCir(Graph<String, String> graph) {
+        List<String[]> allPaths;
+        allPaths = getAllPaths();
+        return null;
+    }
+
+    private static List<String[]> getAllPaths() {
+        Stack<Graph.Vertex> stack = new Stack<>();
         Iterator iterator = graph.getVertices().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry pair = (Map.Entry) iterator.next();
-            Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
-            if (!stack.contains(vertex) && !vertex.getColor()) {
-                vertex.setColor(WHITE);
+        Map.Entry pair = (Map.Entry) iterator.next();
+        Graph.Vertex startingVertex = (Graph.Vertex) pair.getValue();
+        String[] tmp = new String[graph.getVertices().size()];
+        return null;
+    }
+
+    private static void BFS2(Graph.Vertex vertex) {
+        Queue<Graph.Vertex> queue = new LinkedList<>();
+        vertex.setColor(BLACK);
+        queue.add(vertex);
+        while (!queue.isEmpty()) {
+            Graph.Vertex p = queue.poll();
+            for (int i = 0; i < p.getAdjacencyList().size(); i++) {
+                String edgeKey = (String) p.getAdjacencyList().get(i);
+                Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
+                if (vertex2.getColor()) {
+                    vertex2.setColor(BLACK);
+                    queue.add(vertex2);
+                }
             }
         }
+    }
+
+    private static String[] findHC(Graph<String, String> graph) {
+        colorAllVerticesWhite(graph);
+
+        Stack<Graph.Vertex> stack = new Stack<>();
+        Iterator iterator = graph.getVertices().entrySet().iterator();
+        Map.Entry pair = (Map.Entry) iterator.next();
+        Graph.Vertex startingVertex = (Graph.Vertex) pair.getValue();
+        stack.push(startingVertex);
+        while (!stack.isEmpty()) {
+            Graph.Vertex p = stack.peek();
+            p.setColor(BLACK);
+            boolean flag = true;
+            for (int i = 0; i < p.getAdjacencyList().size() && flag; i++) {
+                String edgeKey = (String) p.getAdjacencyList().get(i);
+                Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
+                if (vertex2.getColor()) {
+                    stack.push(vertex2);
+                    flag = false;
+                } else if (vertex2.getValue().equals(startingVertex.getValue()) && stack.size() == graph.getVertices().size()) {
+//                    String[] hamiltonianCircuit = new String[stack.size() + 1];
+//                    for (int k = hamiltonianCircuit.length - 2; k >= 0; k--) {
+//                        hamiltonianCircuit[k] = (String) stack.pop().getValue();
+//                    }
+//                    hamiltonianCircuit[hamiltonianCircuit.length - 1] = hamiltonianCircuit[0];
+//                    return hamiltonianCircuit;
+                    return null; //TODO: uncomment all part above
+                }
+            }
+            if (flag) {
+                stack.pop();
+            }
+        }
+
+        return null;
     }
 
     private static void colorAllVerticesWhite(Graph<String, String> graph) {
@@ -190,6 +176,121 @@ public class ProblemB {
             Map.Entry pair = (Map.Entry) iterator.next();
             Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
             vertex.setColor(WHITE);
+        }
+    }
+
+    static Map<String, List<String>> verticesPaths = new LinkedHashMap<>();
+
+    private static void breadFirstSearch(Graph<String, String> graph) {
+        //coloring every vertex white color
+//        Iterator iterator = graph.getVertices().entrySet().iterator();
+//        while (iterator.hasNext()) {
+//            Map.Entry pair = (Map.Entry) iterator.next();
+//            Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
+//            vertex.setColor(WHITE);
+//        }
+
+
+        Iterator iterator = graph.getVertices().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
+            if (vertex.getColor()) {
+                BFS(vertex);
+
+            }
+        }
+        if (true) {
+            boolean check = true;
+        }
+    }
+
+    private static void BFS(Graph.Vertex vertex) {
+        Queue<Graph.Vertex> queue = new LinkedList<>();
+        vertex.setColor(BLACK);
+        queue.add(vertex);
+        while (!queue.isEmpty()) {
+            Graph.Vertex p = queue.poll();
+            for (int i = 0; i < p.getAdjacencyList().size(); i++) {
+                String edgeKey = (String) p.getAdjacencyList().get(i);
+                Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
+                if (vertex2.getColor()) {
+                    vertex2.setColor(BLACK);
+                    queue.add(vertex2);
+                }
+            }
+        }
+    }
+
+    private static boolean isOrigin(Graph.Vertex vertex, Graph.Vertex origin) {
+        return vertex.getValue().equals(origin.getValue());
+    }
+
+    public static void depthFirstSearch(Graph graph) {
+        //coloring every vertex white color
+        Iterator iterator = graph.getVertices().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
+            vertex.setColor(WHITE);
+        }
+
+        iterator = graph.getVertices().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            Graph.Vertex vertex = (Graph.Vertex) pair.getValue();
+            if (vertex.getColor()) {
+                DFS(vertex);
+            }
+        }
+    }
+
+    private static void DFS(Graph.Vertex vertex) {
+        vertex.setColor(BLACK);
+        for (int i = 0; i < vertex.getAdjacencyList().size(); i++) {
+            String edgeKey = (String) vertex.getAdjacencyList().get(i);
+            Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
+            if (vertex2.getColor()) {
+                DFS(vertex2);
+            }
+        }
+    }
+
+    private static void readDataToGraph(String[] firstLineData, String[] secondLineData) {
+        for (String s : firstLineData) {
+            graph.insertVertex(s);
+        }
+
+        for (int i = 0; i < secondLineData.length; i += 2) {
+            if (((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
+                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DU"))
+                    || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DU")
+                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))
+                    || ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
+                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DG"))
+                    || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DG")
+                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))) {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EXCLAMATION);
+            } else if ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-U")
+                    || secondLineData[i].substring(secondLineData[i].length() - 2).equals("-G")) ||
+                    (secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-U")
+                            || secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-G"))) {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], QUESTION);
+            } else {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EMPTY);
+            }
+        }
+    }
+
+    static class Path {
+        private List<Graph.Vertex> listOfVertices;
+
+        public Path() {
+            listOfVertices = new ArrayList<>();
+        }
+
+        public void addToPath(Graph.Vertex vertex) {
+            listOfVertices.add(vertex);
         }
     }
 
@@ -376,6 +477,7 @@ public class ProblemB {
             public Vertex(TDataValue value) {
                 this.value = value;
                 adjacencyList = new ArrayList<>();
+                this.color = WHITE;
             }
 
             public TDataValue getValue() {
@@ -439,4 +541,5 @@ public class ProblemB {
             }
         }
     }
+
 }

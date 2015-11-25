@@ -177,9 +177,18 @@ public class Graph<TDataValue, TWeight> {
         return edges.size();
     }
 
+    public HashMap<TDataValue, Vertex> getVertices() {
+        return vertices;
+    }
+
+    public HashMap<String, Edge> getEdges() {
+        return edges;
+    }
+
     private class Vertex {
         private TDataValue value;
         private List<String> adjacencyList;
+        private boolean color; //for  DFS or BFS
 
         public Vertex(TDataValue value) {
             this.value = value;
@@ -200,6 +209,14 @@ public class Graph<TDataValue, TWeight> {
 
         public void setEdgeToAdjacencyList(String edgeKey) {
             adjacencyList.add(edgeKey);
+        }
+
+        public boolean isColor() {
+            return color;
+        }
+
+        public void setColor(boolean color) {
+            this.color = color;
         }
     }
 
