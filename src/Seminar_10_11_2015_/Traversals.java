@@ -45,19 +45,67 @@ public class Traversals {
 
 //        breadFirstSearch(graph);
 
-        Queue<String> paths = new LinkedList<>();
-        paths.add("Rostov-R");
-        List<String> resultingPaths = findPath(paths);
+//        Queue<String> paths = new LinkedList<>();
+//        paths.add("Rostov-R");
+//        List<String> resultingPaths = findPath(paths);
 
-        System.out.println(resultingPaths.size());
-        System.out.println(resultingPaths.get(0));
+        List<String> allPaths = allPaths("Melitopol-U", "Rostov-R");
+
+        System.out.println(allPaths.size());
+        String[] shortestPath = allPaths.get(0).split("\\s");
+        for (String s : allPaths) {
+            String[] tmpPath = s.split("\\s");
+            if (shortestPath.length > tmpPath.length) {
+                shortestPath = tmpPath;
+            }
+        }
+
+        System.out.println(shortestPath.length);
+        for (String s : shortestPath) {
+            System.out.print(s + " ");
+        }
     }
 
     public Map<String, List<String>> findPath(String path) {
         return null;
     }
 
-    static List<String> paths = new LinkedList<>();
+//    static List<String> paths = new LinkedList<>();
+
+    private static List<String> allPaths(String origin, String destination) {
+        Queue<String> paths = new LinkedList<>();
+        paths.add(origin);
+        List<String> resultingPaths = new LinkedList<>();
+        while (!paths.isEmpty()) {
+            if (paths.size() > 4) {
+                int i = 1;//debugging
+            }
+            String path = paths.poll();
+            String[] verticesInPath = path.split("\\s");
+            String parent = verticesInPath[verticesInPath.length - 1];
+            String grandFather = " ";
+            if (verticesInPath.length > 1) {
+                grandFather = verticesInPath[verticesInPath.length - 2];
+            }
+            Graph.Vertex vertex = (Graph.Vertex) graph.getVertices().get(parent);
+            List adjacencyList = vertex.getAdjacencyList();
+            for (int i = 0; i < adjacencyList.size(); i++) {
+                String tmp = (String) adjacencyList.get(i);
+                String child = tmp.split("\\s")[1];
+                if (child.equals(destination)) {
+                    resultingPaths.add(path + " " + child);
+                } else if (!child.equals(destination) && !child.equals(grandFather)) {
+                    String pathToAdd = path + " " + child;
+                    int amountOfVerticesContained = pathToAdd.split("\\s").length;
+                    if (amountOfVerticesContained < graph.amountOfVertices()) {
+                        paths.add(pathToAdd);
+                    }
+                }
+            }
+        }
+
+        return resultingPaths;
+    }
 
     private static List<String> findPath(Queue<String> paths) {
         List<String> resultingPaths = new LinkedList<>();
@@ -68,10 +116,6 @@ public class Traversals {
             String path = paths.poll();
             String[] verticesInPath = path.split("\\s");
             String parent = verticesInPath[verticesInPath.length - 1];
-            String grandFather = " ";
-            if (verticesInPath.length > 1) {
-                grandFather = verticesInPath[verticesInPath.length - 2];
-            }
             Graph.Vertex vertex = (Graph.Vertex) graph.getVertices().get(parent);
             List adjacencyList = vertex.getAdjacencyList();
             for (int i = 0; i < adjacencyList.size(); i++) {
@@ -131,42 +175,6 @@ public class Traversals {
                 }
             }
         }
-    }
-
-    private static String[] findHC(Graph<String, String> graph) {
-        colorAllVerticesWhite(graph);
-
-        Stack<Graph.Vertex> stack = new Stack<>();
-        Iterator iterator = graph.getVertices().entrySet().iterator();
-        Map.Entry pair = (Map.Entry) iterator.next();
-        Graph.Vertex startingVertex = (Graph.Vertex) pair.getValue();
-        stack.push(startingVertex);
-        while (!stack.isEmpty()) {
-            Graph.Vertex p = stack.peek();
-            p.setColor(BLACK);
-            boolean flag = true;
-            for (int i = 0; i < p.getAdjacencyList().size() && flag; i++) {
-                String edgeKey = (String) p.getAdjacencyList().get(i);
-                Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
-                if (vertex2.getColor()) {
-                    stack.push(vertex2);
-                    flag = false;
-                } else if (vertex2.getValue().equals(startingVertex.getValue()) && stack.size() == graph.getVertices().size()) {
-//                    String[] hamiltonianCircuit = new String[stack.size() + 1];
-//                    for (int k = hamiltonianCircuit.length - 2; k >= 0; k--) {
-//                        hamiltonianCircuit[k] = (String) stack.pop().getValue();
-//                    }
-//                    hamiltonianCircuit[hamiltonianCircuit.length - 1] = hamiltonianCircuit[0];
-//                    return hamiltonianCircuit;
-                    return null; //TODO: uncomment all part above
-                }
-            }
-            if (flag) {
-                stack.pop();
-            }
-        }
-
-        return null;
     }
 
     private static void colorAllVerticesWhite(Graph<String, String> graph) {

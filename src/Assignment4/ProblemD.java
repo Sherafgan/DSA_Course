@@ -5,20 +5,18 @@ import java.util.*;
 
 /**
  * @author Sherafgan Kandov
- *         24.11.15
+ *         26.11.15
  */
-public class ProblemB {
+public class ProblemD {
     private static final String IN_FILE_NAME = "cities.txt";
-    private static final String OUT_FILE_NAME = "able.txt";
+    private static final String OUT_FILE_NAME = "travel-now.txt";
 
     private static final String HOMETOWN = "Rostov-R";
+    private static final String CURRENT_TOWN = "Melitopol-U";
 
     private static final String EMPTY = "#";
     private static final String QUESTION = "?";
     private static final String EXCLAMATION = "!";
-
-    private static final boolean WHITE = true;
-    private static final boolean BLACK = false;
 
     static Graph<String, String> graph;
 
@@ -38,18 +36,54 @@ public class ProblemB {
 
             readDataToGraph(firstLineData, secondLineData);
 
-            if (amountOfCitiesVisitedFromHometown(graph) == graph.amountOfVertices()) {
-                lineToPrint = lineToPrint + "yes";
-            } else {
-                lineToPrint = lineToPrint + "no";
+            //case 1
+            List<String> allPaths = allPaths(CURRENT_TOWN, HOMETOWN);
+
+            List<String[]> allPathsWithNoViolations = new LinkedList<>();
+
+            for (int i = 0; i < allPaths.size(); i++) {
+                String[] tmpPath = allPaths.get(i).split("\\s");
+                if (isThisAPathWithNoViolations(tmpPath)) {
+                    allPathsWithNoViolations.add(tmpPath);
+                }
             }
 
-            graph.removeEdge("Vladikavkaz-R", "Tbilisi-G", QUESTION);
+            String[] shortestPath = allPathsWithNoViolations.get(0);
+            for (String[] tmpPath : allPathsWithNoViolations) {
+                if (shortestPath.length > tmpPath.length) {
+                    shortestPath = tmpPath;
+                }
+            }
 
-            if (amountOfCitiesVisitedFromHometown(graph) == graph.amountOfVertices()) {
-                lineToPrint = lineToPrint + " " + "yes";
-            } else {
-                lineToPrint = lineToPrint + " " + "no";
+            lineToPrint = lineToPrint + (shortestPath.length - 1);
+            for (String cityName : shortestPath) {
+                lineToPrint = lineToPrint + " " + cityName;
+            }
+
+            lineToPrint = lineToPrint + "\n";
+
+            //case 2
+            allPaths = allPaths("Sukhumi-DG", "Lugansk-DU");
+
+            allPathsWithNoViolations = new LinkedList<>();
+
+            for (int i = 0; i < allPaths.size(); i++) {
+                String[] tmpPath = allPaths.get(i).split("\\s");
+                if (isThisAPathWithNoViolations(tmpPath)) {
+                    allPathsWithNoViolations.add(tmpPath);
+                }
+            }
+
+            shortestPath = allPathsWithNoViolations.get(0);
+            for (String[] tmpPath : allPathsWithNoViolations) {
+                if (shortestPath.length > tmpPath.length) {
+                    shortestPath = tmpPath;
+                }
+            }
+
+            lineToPrint = lineToPrint + (shortestPath.length - 1);
+            for (String cityName : shortestPath) {
+                lineToPrint = lineToPrint + " " + cityName;
             }
         }
 
@@ -59,30 +93,46 @@ public class ProblemB {
         outFile.close();
     }
 
-    private static int amountOfCitiesVisitedFromHometown(Graph<String, String> graph) {
-        return BFS(graph.getVertices().get(HOMETOWN));
+    private static boolean isThisAPathWithNoViolations(String[] hamiltonianCircuit) {
+        for (int i = 0; i < hamiltonianCircuit.length - 1; i++) {
+            if (graph.exist(hamiltonianCircuit[i], hamiltonianCircuit[i + 1], EXCLAMATION)) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    private static int BFS(Graph.Vertex vertex) {
-        int amountOfCitiesVisited = 1; //Hometown counts, because we then compare with amount of all cities in graph
-        Queue<Graph.Vertex> queue = new LinkedList<>();
-        vertex.setColor(BLACK);
-        queue.add(vertex);
-        while (!queue.isEmpty()) {
-            Graph.Vertex p = queue.poll();
-            for (int i = 0; i < p.getAdjacencyList().size(); i++) {
-                String edgeKey = (String) p.getAdjacencyList().get(i);
-                Graph.Vertex vertex2 = graph.getVertices().get(edgeKey.trim().split("\\s")[1]);
-                if (vertex2.getColor()) {
-                    vertex2.setColor(BLACK);
-                    queue.add(vertex2);
-                    amountOfCitiesVisited++;
+    private static List<String> allPaths(String from, String to) {
+        Queue<String> paths = new LinkedList<>();
+        paths.add(from);
+        List<String> resultingPaths = new LinkedList<>();
+        while (!paths.isEmpty()) {
+            String path = paths.poll();
+            String[] verticesInPath = path.split("\\s");
+            String parent = verticesInPath[verticesInPath.length - 1];
+            String grandFather = " ";
+            if (verticesInPath.length > 1) {
+                grandFather = verticesInPath[verticesInPath.length - 2];
+            }
+            Graph.Vertex vertex = (Graph.Vertex) graph.getVertices().get(parent);
+            List adjacencyList = vertex.getAdjacencyList();
+            for (int i = 0; i < adjacencyList.size(); i++) {
+                String tmp = (String) adjacencyList.get(i);
+                String child = tmp.split("\\s")[1];
+                if (child.equals(to)) {
+                    resultingPaths.add(path + " " + child);
+                } else if (!child.equals(to) && !child.equals(grandFather)) {
+                    String pathToAdd = path + " " + child;
+                    int amountOfVerticesContained = pathToAdd.split("\\s").length;
+                    if (amountOfVerticesContained < graph.amountOfVertices()) {
+                        paths.add(pathToAdd);
+                    }
                 }
             }
         }
-        return amountOfCitiesVisited;
-    }
 
+        return resultingPaths;
+    }
 
     private static void readDataToGraph(String[] firstLineData, String[] secondLineData) {
         for (String s : firstLineData) {
@@ -90,22 +140,22 @@ public class ProblemB {
         }
 
         for (int i = 0; i < secondLineData.length; i += 2) {
-            if (!(((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
+            if (((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
                     && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DU"))
                     || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DU")
                     && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))
                     || ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-R")
                     && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 3).equals("-DG"))
                     || (secondLineData[i].substring(secondLineData[i].length() - 3).equals("-DG")
-                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R"))))) {
-                if ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-U")
-                        || secondLineData[i].substring(secondLineData[i].length() - 2).equals("-G")) ||
-                        (secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-U")
-                                || secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-G"))) {
-                    graph.insertEdge(secondLineData[i], secondLineData[i + 1], QUESTION);
-                } else {
-                    graph.insertEdge(secondLineData[i], secondLineData[i + 1], EMPTY);
-                }
+                    && secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-R")))) {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EXCLAMATION);
+            } else if ((secondLineData[i].substring(secondLineData[i].length() - 2).equals("-U")
+                    || secondLineData[i].substring(secondLineData[i].length() - 2).equals("-G")) ||
+                    (secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-U")
+                            || secondLineData[i + 1].substring(secondLineData[i + 1].length() - 2).equals("-G"))) {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], QUESTION);
+            } else {
+                graph.insertEdge(secondLineData[i], secondLineData[i + 1], EMPTY);
             }
         }
     }
@@ -239,6 +289,16 @@ public class ProblemB {
             return null;
         }
 
+        public boolean exist(TDataValue origin, TDataValue destination, TWeight weight) {
+            String edgeKey = makeKeyForEdge(origin, destination, weight);
+            String edgeKey2 = makeKeyForEdge(destination, origin, weight);
+            if (graph.getEdges().get(edgeKey) != null || (graph.getEdges().get(edgeKey2) != null)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         public String opposite(TDataValue vertexValue, TWeight weight) {
             //Complexity: O(#incidentEdges) => O(1)
             if (vertices.get(vertexValue) != null) {
@@ -293,7 +353,6 @@ public class ProblemB {
             public Vertex(TDataValue value) {
                 this.value = value;
                 adjacencyList = new ArrayList<>();
-                this.color = WHITE;
             }
 
             public TDataValue getValue() {
